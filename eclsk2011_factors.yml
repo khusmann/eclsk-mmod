@@ -1,0 +1,183 @@
+
+efa2occ124:
+   F1:
+      - TKEEPS
+      - TSHOWS
+      - TWORKS
+      - TADAPTS
+      - TFOLLOW
+      - TPERSIS
+      - TATTEN
+      - TBEZDAC
+      - TBNOFIN
+      - TBEZDSL
+      - TBWTTSK
+      - TBTRBST
+      - TBFLWIN
+      - TBSTNO
+   F2:
+      - TBGCCLR
+      - TBGCBLD
+      - TBABSBK
+
+efa3occ1:
+   F1:
+      - TBTRBST
+      - TBSTNO
+      - TBEZDSL
+      - TFOLLOW
+      - TBWTTSK
+      - TBFLWIN
+      - TBEZDAC
+      - TATTEN
+   F2:
+      - TKEEPS
+      - TSHOWS
+      - TWORKS
+      - TADAPTS
+      - TPERSIS
+      - TBNOFIN
+   F3:
+      - TBGCCLR
+      - TBGCBLD
+      - TBABSBK
+
+efa3occ24:
+   F1:
+      - TBTRBST
+      - TBSTNO
+      - TBEZDSL
+      - TFOLLOW
+      - TBWTTSK
+      - TBFLWIN
+   F2:
+      - TBEZDAC
+      - TATTEN
+      - TKEEPS
+      - TSHOWS
+      - TWORKS
+      - TADAPTS
+      - TPERSIS
+      - TBNOFIN
+   F3:
+      - TBGCCLR
+      - TBGCBLD
+      - TBABSBK
+
+efa4occ14:
+   F1:
+      - TWORKS
+      - TPERSIS
+      - TSHOWS
+      - TADAPTS
+      - TKEEPS
+      - TATTEN
+   F2:
+      - TBEZDSL
+      - TBTRBST
+      - TBEZDAC
+      - TBNOFIN
+   F3:
+      - TBSTNO
+      - TBWTTSK
+      - TFOLLOW
+      - TBFLWIN
+   F4:
+      - TBGCCLR
+      - TBGCBLD
+      - TBABSBK
+
+efa4occ2:
+   F1:
+      - TWORKS
+      - TSHOWS
+      - TPERSIS
+      - TADAPTS
+      - TKEEPS
+   F2:
+      - TATTEN
+      - TBEZDSL
+      - TBTRBST
+      - TBEZDAC
+      - TBNOFIN
+   F3:
+      - TBSTNO
+      - TBWTTSK
+      - TFOLLOW
+      - TBFLWIN
+   F4:
+      - TBGCCLR
+      - TBGCBLD
+      - TBABSBK
+
+efa5occ1:
+   F1:
+      - TWORKS
+      - TSHOWS
+      - TPERSIS
+      - TADAPTS
+      - TATTEN
+      - TKEEPS
+   F2:
+      - TBEZDSL
+      - TBTRBST
+   F3:
+      - TBEZDAC
+      - TBNOFIN
+   F4:
+      - TBSTNO
+      - TBWTTSK
+      - TFOLLOW
+      - TBFLWIN
+   F5:
+      - TBGCCLR
+      - TBGCBLD
+      - TBABSBK
+
+efa5occ2:
+   F1:
+      - TWORKS
+      - TSHOWS
+      - TPERSIS
+      - TADAPTS
+      - TKEEPS
+   F2:
+      - TBEZDSL
+      - TBTRBST
+      - TATTEN
+      - TBEZDAC
+   F3:
+      - TBNOFIN
+   F4:
+      - TBSTNO
+      - TBWTTSK
+      - TFOLLOW
+      - TBFLWIN
+   F5:
+      - TBGCCLR
+      - TBGCBLD
+      - TBABSBK
+
+efa5occ4:
+   F1:
+      - TWORKS
+      - TSHOWS
+      - TPERSIS
+      - TADAPTS
+      - TATTEN
+      - TKEEPS
+   F2:
+      - TBEZDSL
+      - TBTRBST
+      - TBEZDAC
+   F3:
+      - TBNOFIN
+   F4:
+      - TBSTNO
+      - TBWTTSK
+      - TFOLLOW
+      - TBFLWIN
+   F5:
+      - TBGCCLR
+      - TBGCBLD
+      - TBABSBK
