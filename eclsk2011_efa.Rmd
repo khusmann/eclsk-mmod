@@ -1,0 +1,47 @@
+---
+title: "Measurement models for executive function"
+author: "Kyle Husmann"
+date: "March 25, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source('scripts/eclsk2011data.R')
+library(psych)
+```
+
+# Parallel Analysis
+
+```{r}
+to_explore <- c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN',
+                'TBEZDAC', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBEZDSL', 'TBABSBK',
+                'TBWTTSK', 'TBTRBST', 'TBFLWIN', 'TBSTNO') # Omitting: 'TBPLNAC', 'TBAPRRK'
+
+df_explore <- function(o) {
+  na.omit(df_train[itemName(o, to_explore)])
+}
+
+par_res = map(occasions, ~fa.parallel(df_explore(.)))
+```
+
+# EFA with 2, 3, 4, 5 factors
+
+```{r}
+num_factors <- c(2, 3, 4, 5)
+fa_res <-map(num_factors, function(i) {
+  tmp <- map(occasions, ~fa(df_explore(.), nfactors=i, rotate='promax'))
+  names(tmp) <- map_chr(occasions, ~paste0('occ', .))
+  tmp
+})
+names(fa_res) <- map_chr(num_factors, ~paste0('efa', .))
+
+iwalk(fa_res, function (i, ni) {
+  iwalk(i, function(o, no) {
+    fa.diagram(o, main=paste0(ni, '+', no))
+    #print(loadings(o))
+  })
+})
+```

@@ -1,0 +1,80 @@
+---
+title: "Measurement models for executive function"
+author: "Kyle Husmann"
+date: "March 25, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source('scripts/eclsk2011data.R')
+```
+
+```{r}
+measures_theory <- list(
+  ATL = c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN'),
+  CBQ_A = c('TBEZDAC', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBEZDSL', 'TBABSBK'),
+  CBQ_I = c('TBWTTSK', 'TBTRBST', 'TBFLWIN', 'TBSTNO') # Omitting: 'TBPLNAC', 'TBAPRRK'
+# Parent Items
+    # ATL_P = c('PWRKFIN', 'PSHWINT', 'PCONCEN', 'PCHORES', 'PLEARN', 'PCREATV'),
+# Child assessment
+    # DCCS = c('XCSBGSC')
+    # NREV = c('XNRSSCR')
+)
+
+mmod_theory <- mmodModel(measures_theory, "Three factor MMOD (theory)", fiml=F)
+mmod_theory_res <- mxRun(mmod_theory)
+summary(mmod_theory_res)
+```
+
+```{r}
+measures_3 <- list(
+  DO = c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TPERSIS', 'TATTEN', 'TBEZDAC', 'TBNOFIN', 'TBEZDSL'),
+  NOTDO = c('TFOLLOW', 'TBWTTSK', 'TBTRBST', 'TBFLWIN', 'TBSTNO'),
+  FLOW = c('TBGCCLR', 'TBGCBLD', 'TBABSBK')
+)
+
+mmod_3 <- mmodModel(measures_3, "Three factor MMOD (data-driven)")
+mmod_3_res <- mxRun(mmod_3)
+summary(mmod_3_res)
+```
+
+```{r}
+measures_2 <- list(
+  ATL = c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TPERSIS', 'TATTEN', 'TBEZDAC', 'TBNOFIN', 'TBEZDSL', 'TFOLLOW', 'TBWTTSK', 'TBTRBST', 'TBFLWIN', 'TBSTNO'),
+  FLOW = c('TBGCCLR', 'TBGCBLD', 'TBABSBK')
+)
+
+mmod_2 <- mmodModel(measures_2, "Two factor MMOD (data-driven)")
+mmod_2_res <- mxRun(mmod_2)
+summary(mmod_2_res)
+```
+
+```{r}
+measures_1 <- list(
+  F = c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TPERSIS', 'TATTEN',
+        'TBEZDAC', 'TBNOFIN', 'TBEZDSL', 'TFOLLOW', 'TBWTTSK', 'TBTRBST',
+        'TBFLWIN', 'TBSTNO', 'TBGCCLR', 'TBGCBLD', 'TBABSBK')
+)
+
+mmod_1 <- mmodModel(measures_1, "One factor MMOD (data-driven)")
+mmod_1_res <- mxRun(mmod_1)
+summary(mmod_1_res)
+```
+
+```{r}
+measures_4 = list(
+  DIR = c('TSHOWS', 'TWORKS', 'TPERSIS', 'TADAPTS', 'TATTEN', 'TKEEPS'),
+  DISTR = c('TBEZDAC', 'TBEZDSL', 'TBTRBST', 'TBNOFIN'),
+  FOLLO = c('TBSTNO', 'TBWTTSK', 'TFOLLOW', 'TBFLWIN'),
+  FLOW = c('TBGCCLR', 'TBGCBLD', 'TBABSBK')
+)
+
+mmod_4 <- mmodModel(measures_4, "Four factor MMOD (data-driven)")
+mmod_4_res <- mxRun(mmod_4)
+summary(mmod_4_res)
+```
+
+
