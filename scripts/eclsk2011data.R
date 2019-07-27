@@ -1,4 +1,4 @@
-source('eclsk2011env.R')
+source('scripts/eclsk2011env.R')
 
 library(OpenMx)
 library(labelled)
