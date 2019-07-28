@@ -1,5 +1,7 @@
 configfile: 'config.yml'
 
+localrules: all, subset_2011
+
 rule all:
   input: expand('data/mmod/{model}.rds', model=config['eclsk2011_models'])
 
@@ -21,7 +23,11 @@ rule mmod_2011:
     'data/mmod/{model}.rds'
   params:
     measures=lambda wildcards: config['eclsk2011_models'][wildcards.model]
+  resources:
+    mem_mb=4000,
+    walltime_min=5*60
   conda:
     'envs/eclsk-analysis.yml'
+  threads: 24
   script:
     'scripts/run_mmod.R'
