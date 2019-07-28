@@ -5,6 +5,7 @@ VARFILE <- 'data/ecls2011vars.rds'
 SUBSETFILE <- 'data/eclsk_subset_2011.rds'
 RAWFILE <- 'data/raw/eclsk_2011_childk4.sav'
 
+options(tidyverse.quiet = T)
 library(tidyverse)
 
 occasions <- c(1, 2, 4)
