@@ -1,9 +1,9 @@
 configfile: 'config.yml'
 
-localrules: all, subset_2011
+localrules: all, subset_2011, make_mmod_2011
 
 rule all:
-  input: expand('data/mmod/{model}.rds', model=config['eclsk2011_models'])
+  input: expand('data/mmod/{model}.omx', model=config['eclsk2011_models'])
 
 rule subset_2011:
   input:
@@ -16,13 +16,23 @@ rule subset_2011:
   script:
     'scripts/eclsk2011subset.R'
 
-rule mmod_2011:
+rule make_mmod_2011:
   input:
     'data/eclsk_subset_2011.rds'
   output:
     'data/mmod/{model}.rds'
   params:
     measures=lambda wildcards: config['eclsk2011_models'][wildcards.model]
+  conda:
+    'envs/eclsk-analysis.yml'
+  script:
+    'scripts/make_mmod.R'
+
+rule run_mmod_2011:
+  input:
+    'data/mmod/{model}.rds'
+  output:
+    'data/mmod/{model}.omx'
   resources:
     mem_mb=4000,
     walltime_min=5*60
