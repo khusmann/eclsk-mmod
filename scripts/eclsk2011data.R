@@ -30,7 +30,7 @@ set.seed(9001)
 df_train <- df_all %>% sample_frac(0.5)
 df_test <- df_all %>% anti_join(df_train, by='CHILDID')
 
-mmodModel = function(measures, modelName, fiml=F) {
+mmodModel <- function(measures, modelName, fiml=F) {
   derivName <- function(o, m) {
     # derivName(1, 'TKEEPS) -> d1TKEEPS
     str_c('d', o, m)
@@ -98,4 +98,36 @@ mmodModel = function(measures, modelName, fiml=F) {
   ))
 }
 
+cfaModel <- function(measures, modelName, occasion, fiml=F) {
+  factorStruct <- map(measures, ~itemName(occasion, .))
+  def <- list(
+    factorStruct = factorStruct,
+    factors = names(factorStruct),
+    manifests = unlist(factorStruct, use.names=F)
+  )
+  
+  if (fiml) {
+    mxd <- mxData(df_test[def$manifests], type='raw')
+  } else {
+    df_subset <- na.omit(df_test[def$manifests])
+    #df_cors <- polychoric(df_subset)$rho
+    df_cors <- cor(df_subset)
+    mxd <- mxData(df_cors, type='cov', numObs=nrow(df_subset))
+  }
 
+  do.call('mxModel', c(list(
+    modelName, mxd, type="RAM",
+    manifestVars=def$manifests,
+    latentVars=def$factors,
+    # factor loadings
+    unname(imap(def$factorStruct, ~mxPath(from=.y, to=.x, values=0.5, free=T))),
+    # factor variances
+    mxPath(from=def$factors, arrows=2, values=1, free=F),
+    # factor correlations
+    mxPath(from=def$factors, arrows=2, connect="unique.bivariate", free=T),
+    # residual variance
+    mxPath(from=def$manifests, arrows=2, values=1)),
+    # means
+    if (fiml) mxPath(from = 'one', to = def$manifests) else list()
+  ))
+}
