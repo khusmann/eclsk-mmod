@@ -7,7 +7,8 @@ make_mmod <- function(measures, name, fiml) {
   function() {
     mmodModel(measures, name, fiml) %>%
       mxOption('Checkpoint Directory', 'data/mmod') %>%
-      mxRestore()
+      mxOption('Checkpoint Prefix', name) %>%
+      mxRestore(chkpt.directory='data/mmod', chkpt.prefix=name)
   }
 }
 
