@@ -13,7 +13,16 @@ source('scripts/eclsk2011data.R')
 ```
 
 ```{r}
-mmod_results <- map(Sys.glob('data/mmod/*_result.rds'), read_rds);
+mmod_models <- Sys.glob('data/mmod/*_model.rds') %>%
+               map(read_rds) %>%
+               map(rlang::eval_tidy) %>%
+               map(mxRun)
+names(mmod_models) <- map(mmod_models, 'name')
+```
+
+```{r}
+mmod_results <- Sys.glob('data/mmod/*_result.rds') %>%
+                map(read_rds)
 names(mmod_results) <- map(mmod_results, 'modelName')
 
 mmod_fits <- tibble(
