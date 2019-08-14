@@ -1,15 +1,15 @@
 source('scripts/eclsk2011data.R')
 
 make_mmod <- function(measures, name, fiml) {
-  measures <- measures
-  name <- name
-  fiml <- fiml
-  function() {
+  force(measures)
+  force(name)
+  force(fiml)
+  quo(
     mmodModel(measures, name, fiml) %>%
-      mxOption('Checkpoint Directory', 'data/mmod') %>%
-      mxOption('Checkpoint Prefix', name) %>%
-      mxRestore(chkpt.directory='data/mmod', chkpt.prefix=name)
-  }
+    mxOption('Checkpoint Directory', 'data/mmod') %>%
+    mxOption('Checkpoint Prefix', paste0(name, '_')) %>%
+    mxRestore(chkpt.directory='data/mmod', chkpt.prefix=paste0(name, '_'))
+  )
 }
 
 make_mmod(measures=snakemake@params[['measures']],
