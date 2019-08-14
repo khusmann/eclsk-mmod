@@ -10,14 +10,25 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 source('scripts/eclsk2011data.R')
+```
 
-mmod_results <- map(list.files('data/mmod', full.names=T), read_rds)
-names(mmod_results) <- map(mmod_results, 'name')
+```{r}
+mmod_results <- map(Sys.glob('data/mmod/*_result.rds'), read_rds);
+names(mmod_results) <- map(mmod_results, 'modelName')
 
 mmod_fits <- tibble(
-  map_chr(mmod_results, 'name'),
-  # map_dbl(mmod_results, ')
+  name=map_chr(mmod_results, 'modelName'),
+  chisq=map_dbl(mmod_results, 'Chi'),
+  dof=map_dbl(mmod_results, 'ChiDoF'),
+  `-2ll`=map_dbl(mmod_results, 'Minus2LogLikelihood'),
+  aic=map_dbl(mmod_results, 'AIC.Mx'),
+  bic=map_dbl(mmod_results, 'BIC.Mx'),
+  rmsea=map_dbl(mmod_results, 'RMSEA'),
+  cfi=map_dbl(mmod_results, 'CFI'),
+  tli=map_dbl(mmod_results, 'TLI')
 )
+
+mmod_fits
 ```
 
 ```{r}
