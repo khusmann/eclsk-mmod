@@ -1,5 +1,7 @@
 FIML: false
 
+eclsk2011_models_occasions: [1, 2, 4]
+
 eclsk2011_models:
   theory:
     ATL: 

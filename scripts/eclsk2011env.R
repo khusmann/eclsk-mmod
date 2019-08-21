@@ -1,27 +1,46 @@
 # http://supp.apa.org/psycarticles/supplemental/dev_43_6_1428/dev_43_6_1428_supp.html
 # https://nces.ed.gov/edat
 
-VARFILE <- 'data/ecls2011vars.rds'
+VARFILE <- 'data/eclsk2011vars.rds'
 SUBSETFILE <- 'data/eclsk_subset_2011.rds'
 RAWFILE <- 'data/raw/eclsk_2011_childk4.sav'
 
 options(tidyverse.quiet = T)
 library(tidyverse)
 
-occasions <- c(1, 2, 4)
-four_level_measures <- c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN',
-                         'PWRKFIN', 'PSHWINT', 'PCONCEN', 'PCHORES', 'PLEARN', 'PCREATV')
-seven_level_measures <- c('TBEZDAC', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBEZDSL', 'TBABSBK',
-                          'TBWTTSK', 'TBPLNAC', 'TBTRBST', 'TBFLWIN', 'TBAPRRK', 'TBSTNO')
-other_measures <- c('XNRSSCR', 'XCSBGSC')
-
-all_measures <- c(four_level_measures, seven_level_measures, other_measures)
-
 itemName = function(o, m) {
   # itemName(1, 'TKEEPS') -> T1KEEPS
   str_c(str_sub(m, 1, 1), o, str_sub(m, 2))    
 }
 
-allOccasionsFor = function(m) {
-  unlist(map(occasions, ~itemName(., m)))
+allOccasionsFor = function(measures, occasions) {
+  unlist(map(occasions, ~itemName(., measures)))
 }
+
+eclsk2011measures <- list(
+  four_level = c(
+    allOccasionsFor(c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN'), c(1,2,3,4,5,6,7,8)), # Teacher-rated ATL
+    allOccasionsFor(c('PWRKFIN', 'PSHWINT', 'PCONCEN', 'PCHORES', 'PLEARN', 'PCREATV'), c(1,2,4)) # Parent ATL
+  ),
+  five_level = c( 
+    allOccasionsFor(c('TBEZDSL', 'TBSPTLD', 'TBLKARQ', 'TBSPQIK', 'TBEZDAC', 'TBEZWAT'), c(6,7,8)), # TMCQ Inhibition
+    allOccasionsFor(c('TBHTATN', 'TBHTTLK', 'TBPYATN', 'TBDSATN', 'TBPLANS', 'TBFLWIN', 'TBHTSLW'), c(6,7,8)) # TMCQ Attention
+  ),
+  seven_level = c(
+    allOccasionsFor(c('TBEZDAC', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBEZDSL', 'TBABSBK'), c(1,2,4)), # CBQ Attentional Focusing
+    allOccasionsFor(c('TBWTTSK', 'TBPLNAC', 'TBTRBST', 'TBFLWIN', 'TBAPRRK', 'TBSTNO'), c(1,2,4)) # CBQ Inhibitory Control
+  ),
+  numbers = c(
+    allOccasionsFor(c('XNRSSCR'), c(1,2,3,4,5,6,7,8)), # EF: Card sort task
+    allOccasionsFor(c('XRSCALK4', 'XMSCALK4'), c(1,2,3,4,5,6,7,8)), # Reading + Math scale scores
+    allOccasionsFor(c('S_ID'), c(1,2,3,4,5,6,7,8)) # School ID
+  ),
+  factors = c(
+    'CHILDID', # Unique ID
+    'X_CHSEX_R', # Sex
+    'X_RACETHP_R', # Race
+    'X1FIRKDG' # First-time kindergartener
+  )
+)
+
+eclsk2011measures$all <- unlist(eclsk2011measures, use.name=F)

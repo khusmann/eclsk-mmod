@@ -9,7 +9,7 @@ rule subset_2011:
   input:
     'data/raw/eclsk_2011_childk4.sav'
   output:
-    'data/ecls2011vars.rds',
+    'data/eclsk2011vars.rds',
     'data/eclsk_subset_2011.rds'
   conda:
     'envs/eclsk-analysis.yml'
@@ -22,7 +22,8 @@ rule make_mmod_2011:
   output:
     'data/mmod/{model}_model.rds'
   params:
-    measures=lambda wildcards: config['eclsk2011_models'][wildcards.model]
+    measures=lambda wildcards: config['eclsk2011_models'][wildcards.model],
+    occasions=lambda wildcards: config['eclsk2011_models_occasions']
   conda:
     'envs/eclsk-analysis.yml'
   script:

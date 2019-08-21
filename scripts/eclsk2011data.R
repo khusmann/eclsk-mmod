@@ -9,18 +9,14 @@ neg_to_na <- function(x) {na_range(x) <- c(-Inf, 0); user_na_to_na(x)}
 
 df_raw <- df_rawraw %>%
           mutate_if(is.numeric, neg_to_na) %>%
-          mutate(
-            CHILDID = to_factor(CHILDID),
-            X_CHSEX_R = to_factor(X_CHSEX_R),
-            X_RACETHP_R = to_factor(X_RACETHP_R),
-            X1FIRKDG = to_factor(X1FIRKDG),
-          ) %>%
+          mutate_at(vars(one_of(eclsk2011measures$factors)), to_factor) %>%
+          mutate_at(vars(one_of(eclsk2011measures$four_level)), ~ifelse(. > 4, NA, .)) %>%
+          mutate_at(vars(one_of(eclsk2011measures$five_level)), ~ifelse(. > 5, NA, .)) %>%
+          mutate_at(vars(one_of(eclsk2011measures$seven_level)), ~ifelse(. > 7, NA, .)) %>%
+          mutate_at(vars(one_of(eclsk2011measures$all)), scale) %>%
           mutate_if(is.factor, factor) %>%
-          mutate_if(is.numeric, as.numeric) %>%
-          mutate_at(vars(one_of(allOccasionsFor(four_level_measures))), ~ifelse(. > 4, NA, .)) %>%
-          mutate_at(vars(one_of(allOccasionsFor(seven_level_measures))), ~ifelse(. > 8, NA, .)) %>%
-          mutate_at(vars(one_of(allOccasionsFor(all_measures))), scale)
-         
+          mutate_if(is.numeric, as.numeric)
+
 df_all <- df_raw %>%
   filter(X1FIRKDG == '1: YES') %>%
   filter(S1_ID == S2_ID) %>%
@@ -30,7 +26,7 @@ set.seed(9001)
 df_train <- df_all %>% sample_frac(0.5)
 df_test <- df_all %>% anti_join(df_train, by='CHILDID')
 
-mmodModel <- function(measures, modelName, fiml=F) {
+mmodModel <- function(measures, occasions, modelName, fiml=F) {
   derivName <- function(o, m) {
     # derivName(1, 'TKEEPS) -> d1TKEEPS
     str_c('d', o, m)
