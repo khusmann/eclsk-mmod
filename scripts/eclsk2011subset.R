@@ -12,13 +12,11 @@ if (file.exists(VARFILE)) {
   }
 } 
 
-df <- read_spss(RAWFILE)
+df <- read_spss(RAWFILE) %>%
+      rename_at(vars(starts_with('G8')), ~str_replace(., 'G8', 'T8'))
 
 write_rds(colnames(df), VARFILE)
 
-select(df)
-
 df %>%
-  rename_at(vars(starts_with('G8')), funs(str_replace(., 'G8', 'T8'))) %>%
   select(eclsk2011measures$all) %>%
   write_rds(SUBSETFILE)

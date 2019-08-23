@@ -23,7 +23,7 @@ eclsk2011measures <- list(
     allOccasionsFor(c('PWRKFIN', 'PSHWINT', 'PCONCEN', 'PCHORES', 'PLEARN', 'PCREATV'), c(1,2,4)) # Parent ATL
   ),
   five_level = c( 
-    allOccasionsFor(c('TBEZDSL', 'TBSPTLD', 'TBLKARQ', 'TBSPQIK', 'TBEZDAC', 'TBEZWAT'), c(6,7,8)), # TMCQ Inhibition
+    allOccasionsFor(c('TBEZDSL', 'TBSPTLD', 'TBLKARO', 'TBSPQIK', 'TBEZDAC', 'TBEZWAT'), c(6,7,8)), # TMCQ Inhibition
     allOccasionsFor(c('TBHTATN', 'TBHTTLK', 'TBPYATN', 'TBDSATN', 'TBPLANS', 'TBFLWIN', 'TBHTSLW'), c(6,7,8)) # TMCQ Attention
   ),
   seven_level = c(

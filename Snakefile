@@ -3,13 +3,14 @@ configfile: 'config.yml'
 localrules: all, subset_2011, make_mmod_2011
 
 rule all:
-  input: expand('data/mmod/{model}_result.rds', model=config['eclsk2011_models'])
+  input:
+    expand('data/eclsk2011_study1/mmod/{model}_result.rds', model=config['studies']['eclsk2011_study1']['models']),
+    expand('data/eclsk2011_study2/mmod/{model}_result.rds', model=config['studies']['eclsk2011_study2']['models'])
 
 rule subset_2011:
   input:
     'data/raw/eclsk_2011_childk4.sav'
   output:
-    'data/eclsk2011vars.rds',
     'data/eclsk_subset_2011.rds'
   conda:
     'envs/eclsk-analysis.yml'
@@ -20,10 +21,11 @@ rule make_mmod_2011:
   input:
     'data/eclsk_subset_2011.rds'
   output:
-    'data/mmod/{model}_model.rds'
+    'data/{study}/mmod/{model}_model.rds'
   params:
-    measures=lambda wildcards: config['eclsk2011_models'][wildcards.model],
-    occasions=lambda wildcards: config['eclsk2011_models_occasions']
+    measures=lambda wildcards: config['studies'][wildcards.study]['models'][wildcards.model],
+    occasions=lambda wildcards: config['studies'][wildcards.study]['occasions'],
+    data=lambda wildcards: wildcards.study
   conda:
     'envs/eclsk-analysis.yml'
   script:
@@ -31,9 +33,9 @@ rule make_mmod_2011:
 
 rule run_mmod_2011:
   input:
-    'data/mmod/{model}_model.rds'
+    'data/{study}/mmod/{model}_model.rds'
   output:
-    'data/mmod/{model}_result.rds'
+    'data/{study}/mmod/{model}_result.rds'
   resources:
     mem_mb=4000,
     walltime_min=2*60

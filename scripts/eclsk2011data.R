@@ -3,30 +3,40 @@ source('scripts/eclsk2011env.R')
 library(OpenMx)
 library(labelled)
 
-df_rawraw <- read_rds(SUBSETFILE)
+eclsk2011data <- list()
 
-neg_to_na <- function(x) {na_range(x) <- c(-Inf, 0); user_na_to_na(x)}
+eclsk2011data$raw <- read_rds(SUBSETFILE)
 
-df_raw <- df_rawraw %>%
-          mutate_if(is.numeric, neg_to_na) %>%
-          mutate_at(vars(one_of(eclsk2011measures$factors)), to_factor) %>%
-          mutate_at(vars(one_of(eclsk2011measures$four_level)), ~ifelse(. > 4, NA, .)) %>%
-          mutate_at(vars(one_of(eclsk2011measures$five_level)), ~ifelse(. > 5, NA, .)) %>%
-          mutate_at(vars(one_of(eclsk2011measures$seven_level)), ~ifelse(. > 7, NA, .)) %>%
-          mutate_at(vars(one_of(eclsk2011measures$all)), scale) %>%
-          mutate_if(is.factor, factor) %>%
-          mutate_if(is.numeric, as.numeric)
+eclsk2011data$all <- eclsk2011data$raw %>%
+                     mutate_if(is.numeric, function(x) {na_range(x) <- c(-Inf, 0); user_na_to_na(x)}) %>% # Neg values to NA
+                     mutate_at(vars(one_of(eclsk2011measures$factors)), to_factor) %>%
+                     mutate_at(vars(one_of(eclsk2011measures$four_level)), ~ifelse(. > 4, NA, .)) %>%
+                     mutate_at(vars(one_of(eclsk2011measures$five_level)), ~ifelse(. > 5, NA, .)) %>%
+                     mutate_at(vars(one_of(eclsk2011measures$seven_level)), ~ifelse(. > 7, NA, .)) %>%
+                     mutate_at(vars(one_of(c(eclsk2011measures$four_level,
+                                             eclsk2011measures$five_level,
+                                             eclsk2011measures$seven_level))), scale) %>%
+                     mutate_if(is.factor, factor) %>%
+                     mutate_if(is.numeric, as.numeric)
 
-df_all <- df_raw %>%
-  filter(X1FIRKDG == '1: YES') %>%
-  filter(S1_ID == S2_ID) %>%
-  filter(S1_ID == S4_ID)
+eclsk2011data$eclsk2011_study1 <- eclsk2011data$all %>%
+                                  filter(X1FIRKDG == '1: YES') %>%
+                                  filter(S1_ID == S2_ID) %>%
+                                  filter(S1_ID == S4_ID)
+
+eclsk2011data$eclsk2011_study2 <- eclsk2011data$all %>%
+                                  filter(X1FIRKDG == '1: YES') %>%
+                                  filter(S6_ID == S7_ID) %>%
+                                  filter(S6_ID == S8_ID)
 
 set.seed(9001)
-df_train <- df_all %>% sample_frac(0.5)
-df_test <- df_all %>% anti_join(df_train, by='CHILDID')
+eclsk2011data$eclsk2011_study1_train <- eclsk2011data$eclsk2011_study1 %>% sample_frac(0.5)
+eclsk2011data$eclsk2011_study1_test  <- eclsk2011data$eclsk2011_study1 %>% anti_join(eclsk2011data$eclsk2011_study1_train, by='CHILDID')
 
-mmodModel <- function(measures, occasions, modelName, fiml=F) {
+eclsk2011data$eclsk2011_study2_train <- eclsk2011data$eclsk2011_study1 %>% sample_frac(0.5)
+eclsk2011data$eclsk2011_study2_test  <- eclsk2011data$eclsk2011_study1 %>% anti_join(eclsk2011data$eclsk2011_study1_train, by='CHILDID')
+
+mmodModel <- function(data, measures, occasions, modelName, fiml=F) {
   derivName <- function(o, m) {
     # derivName(1, 'TKEEPS) -> d1TKEEPS
     str_c('d', o, m)
@@ -58,9 +68,9 @@ mmodModel <- function(measures, occasions, modelName, fiml=F) {
   )
 
   if (fiml) {
-    mxd <- mxData(df_test[def$manifests], type="raw")
+    mxd <- mxData(data[def$manifests], type="raw")
   } else {
-    df_subset <- na.omit(df_test[def$manifests])
+    df_subset <- na.omit(data[def$manifests])
     #df_cors <- polychoric(df_subset)$rho
     df_cors <- cor(df_subset)
     mxd <- mxData(df_cors, type="cov", numObs=nrow(df_subset))
@@ -94,7 +104,7 @@ mmodModel <- function(measures, occasions, modelName, fiml=F) {
   ))
 }
 
-cfaModel <- function(measures, modelName, occasion, fiml=F) {
+cfaModel <- function(data, measures, modelName, occasion, fiml=F) {
   factorStruct <- map(measures, ~itemName(occasion, .))
   def <- list(
     factorStruct = factorStruct,
@@ -103,9 +113,9 @@ cfaModel <- function(measures, modelName, occasion, fiml=F) {
   )
   
   if (fiml) {
-    mxd <- mxData(df_test[def$manifests], type='raw')
+    mxd <- mxData(data[def$manifests], type='raw')
   } else {
-    df_subset <- na.omit(df_test[def$manifests])
+    df_subset <- na.omit(data[def$manifests])
     #df_cors <- polychoric(df_subset)$rho
     df_cors <- cor(df_subset)
     mxd <- mxData(df_cors, type='cov', numObs=nrow(df_subset))
