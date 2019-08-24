@@ -38,7 +38,7 @@ rule run_mmod_2011:
     'data/{study}/mmod/{model}_result.rds'
   resources:
     mem_mb=4000,
-    walltime_min=2*60
+    walltime_min=4*60
   conda:
     'envs/eclsk-analysis.yml'
   threads: 8
