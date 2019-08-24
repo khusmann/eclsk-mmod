@@ -26,7 +26,6 @@ studies:
             - TBTRBST
             - TBFLWIN
             - TBSTNO
-      
       efa2occ124:
          F1:
             - TKEEPS
@@ -90,7 +89,7 @@ studies:
             - TBGCBLD
             - TBABSBK
 
-      efa4occ124:
+      efa4occ12:
          F1:
             - TWORKS
             - TPERSIS
@@ -103,6 +102,28 @@ studies:
             - TBTRBST
             - TBEZDAC
             - TBNOFIN
+         F3:
+            - TBSTNO
+            - TBWTTSK
+            - TFOLLOW
+            - TBFLWIN
+         F4:
+            - TBGCCLR
+            - TBGCBLD
+            - TBABSBK
+      efa4occ4:
+         F1:
+            - TWORKS
+            - TPERSIS
+            - TSHOWS
+            - TADAPTS
+            - TATTEN
+         F2:
+            - TBEZDSL
+            - TBTRBST
+            - TBEZDAC
+            - TBNOFIN
+            - TKEEPS
          F3:
             - TBSTNO
             - TBWTTSK
