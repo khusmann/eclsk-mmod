@@ -1,35 +1,6 @@
 FIML: false
 
 studies:
-  eclsk2011_study2:
-    occasions: [6, 7, 8]
-    data: eclsk2011_study2_test
-    models:
-      theory:
-        ATL:
-            - TKEEPS
-            - TSHOWS
-            - TWORKS
-            - TADAPTS
-            - TFOLLOW
-            - TPERSIS
-            - TATTEN
-        TCMQ_I:
-            - TBEZDSL
-            - TBSPTLD
-            - TBLKARO
-            - TBSPQIK
-            - TBEZDAC
-            - TBEZWAT
-        TCMQ_A:
-            - TBHTATN
-            - TBHTTLK
-            - TBPYATN
-            - TBDSATN
-            - TBPLANS
-            - TBFLWIN
-            - TBHTSLW
-
   eclsk2011_study1:
     occasions: [1, 2, 4]
     data: eclsk2011_study1_test
@@ -79,49 +50,47 @@ studies:
 
       efa3occ1:
          F1:
-            - TBTRBST
             - TBSTNO
-            - TBEZDSL
+            - TBTRBST
             - TFOLLOW
             - TBWTTSK
+            - TBEZDSL
             - TBFLWIN
             - TBEZDAC
-            - TATTEN
          F2:
-            - TKEEPS
-            - TSHOWS
             - TWORKS
-            - TADAPTS
             - TPERSIS
+            - TSHOWS
+            - TADAPTS
+            - TKEEPS
+            - TATTEN
             - TBNOFIN
          F3:
             - TBGCCLR
             - TBGCBLD
             - TBABSBK
-
       efa3occ24:
          F1:
-            - TBTRBST
             - TBSTNO
-            - TBEZDSL
+            - TBTRBST
             - TFOLLOW
             - TBWTTSK
+            - TBEZDSL
             - TBFLWIN
          F2:
-            - TBEZDAC
-            - TATTEN
-            - TKEEPS
-            - TSHOWS
             - TWORKS
-            - TADAPTS
             - TPERSIS
+            - TSHOWS
+            - TADAPTS
+            - TKEEPS
+            - TATTEN
             - TBNOFIN
          F3:
             - TBGCCLR
             - TBGCBLD
             - TBABSBK
 
-      efa4occ14:
+      efa4occ124:
          F1:
             - TWORKS
             - TPERSIS
@@ -130,29 +99,6 @@ studies:
             - TKEEPS
             - TATTEN
          F2:
-            - TBEZDSL
-            - TBTRBST
-            - TBEZDAC
-            - TBNOFIN
-         F3:
-            - TBSTNO
-            - TBWTTSK
-            - TFOLLOW
-            - TBFLWIN
-         F4:
-            - TBGCCLR
-            - TBGCBLD
-            - TBABSBK
-
-      efa4occ2:
-         F1:
-            - TWORKS
-            - TSHOWS
-            - TPERSIS
-            - TADAPTS
-            - TKEEPS
-         F2:
-            - TATTEN
             - TBEZDSL
             - TBTRBST
             - TBEZDAC
@@ -193,8 +139,8 @@ studies:
 
       efa5occ2:
          F1:
-            - TWORKS
             - TSHOWS
+            - TWORKS
             - TPERSIS
             - TADAPTS
             - TKEEPS
@@ -222,13 +168,13 @@ studies:
             - TPERSIS
             - TADAPTS
             - TATTEN
-            - TKEEPS
          F2:
             - TBEZDSL
             - TBTRBST
-            - TBEZDAC
          F3:
+            - TBEZDAC
             - TBNOFIN
+            - TKEEPS
          F4:
             - TBSTNO
             - TBWTTSK
@@ -238,3 +184,155 @@ studies:
             - TBGCCLR
             - TBGCBLD
             - TBABSBK
+  eclsk2011_study2:
+    occasions: [6, 7, 8]
+    data: eclsk2011_study2_test
+    models:
+      efa2occ678:
+         F1:
+            - TPERSIS
+            - TWORKS
+            - TBEZDAC
+            - TATTEN
+            - TSHOWS
+            - TBHTATN
+            - TBDSATN
+            - TBLKARO
+            - TBPYATN
+            - TBEZDSL
+            - TBFLWIN
+            - TBPLANS
+            - TKEEPS
+            - TADAPTS
+         F2:
+            - TBEZWAT
+            - TBHTSLW
+            - TBHTTLK
+            - TBSPTLD
+            - TBSPQIK
+            - TFOLLOW
+      efa3occ678:
+         F1:
+            - TBDSATN
+            - TBHTATN
+            - TBPYATN
+            - TBLKARO
+            - TBEZDAC
+            - TBEZDSL
+         F2:
+            - TSHOWS
+            - TPERSIS
+            - TWORKS
+            - TADAPTS
+            - TATTEN
+            - TBPLANS
+            - TKEEPS
+            - TBFLWIN
+         F3:
+            - TBEZWAT
+            - TBHTSLW
+            - TBHTTLK
+            - TBSPTLD
+            - TBSPQIK
+            - TFOLLOW
+      efa4occ6:
+         F1:
+            - TBDSATN
+            - TBHTATN
+            - TBPYATN
+            - TBLKARO
+            - TBEZDAC
+            - TBEZDSL
+         F2:
+            - TSHOWS
+            - TPERSIS
+            - TWORKS
+            - TADAPTS
+            - TATTEN
+            - TBPLANS
+            - TKEEPS
+            - TBFLWIN
+         F3:
+            - TBEZWAT
+            - TBHTSLW
+            - TBHTTLK
+            - TBSPTLD
+            - TFOLLOW
+         F4:
+            - TBSPQIK
+      efa4occ78:
+         F1:
+            - TBDSATN
+            - TBHTATN
+            - TBPYATN
+            - TBLKARO
+            - TBEZDAC
+            - TBEZDSL
+         F2:
+            - TSHOWS
+            - TPERSIS
+            - TWORKS
+            - TADAPTS
+            - TATTEN
+            - TBPLANS
+            - TKEEPS
+            - TBFLWIN
+         F3:
+            - TBEZWAT
+            - TBHTSLW
+            - TBHTTLK
+            - TFOLLOW
+         F4:
+            - TBSPQIK
+            - TBSPTLD
+      efa5occ678:
+         F1:
+            - TBDSATN
+            - TBHTATN
+            - TBPYATN
+            - TBLKARO
+            - TBEZDAC
+            - TBEZDSL
+         F2:
+            - TSHOWS
+            - TPERSIS
+            - TWORKS
+            - TADAPTS
+            - TATTEN
+            - TKEEPS
+            - TBFLWIN
+         F3:
+            - TBEZWAT
+            - TBHTSLW
+            - TBHTTLK
+            - TFOLLOW
+         F4:
+            - TBSPQIK
+            - TBSPTLD
+         F5:
+            - TBPLANS
+      theory:
+        ATL:
+            - TKEEPS
+            - TSHOWS
+            - TWORKS
+            - TADAPTS
+            - TFOLLOW
+            - TPERSIS
+            - TATTEN
+        TCMQ_I:
+            - TBEZDSL
+            - TBSPTLD
+            - TBLKARO
+            - TBSPQIK
+            - TBEZDAC
+            - TBEZWAT
+        TCMQ_A:
+            - TBHTATN
+            - TBHTTLK
+            - TBPYATN
+            - TBDSATN
+            - TBPLANS
+            - TBFLWIN
+            - TBHTSLW
+
