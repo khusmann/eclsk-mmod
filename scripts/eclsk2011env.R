@@ -1,9 +1,9 @@
 # http://supp.apa.org/psycarticles/supplemental/dev_43_6_1428/dev_43_6_1428_supp.html
 # https://nces.ed.gov/edat
 
-VARFILE <- 'data/eclsk2011vars.rds'
-SUBSETFILE <- 'data/eclsk_subset_2011.rds'
-RAWFILE <- 'data/raw/eclsk_2011_childk4.sav'
+VARFILE <- 'data/res/eclsk2011vars.rds'
+SUBSETFILE <- 'data/res/eclsk_subset_2011.rds'
+RAWFILE <- 'data/src/eclsk_2011_childk4.sav'
 
 options(tidyverse.quiet = T)
 library(tidyverse)
