@@ -10,33 +10,52 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 source('scripts/eclsk2011data.R')
+
+do_missing <- function(df_raw, vars_of_interest, thresh) {
+
+  df_long <-df_raw %>%
+    mutate_if(is.numeric, function(x) {na_range(x) <- c(-Inf, 0); user_na_to_na(x)}) %>%
+    gather(key, value, vars_of_interest) %>%
+    separate(key, c('occasion', 'meas'), sep=2, remove=F) %>%
+    mutate(occasion = as.numeric(str_sub(occasion, 2))) %>%
+    mutate(not_observed = value > thresh)
+  
+  # Show dist of vars
+  g1 <- df_long %>%
+    ggplot(aes(value)) +
+    geom_histogram() +
+    facet_grid(vars(occasion), vars(meas))
+  
+  # Show missingness
+  g2 <- df_long %>%
+    group_by(meas, occasion) %>%
+    summarize(
+#      num_na = sum(is.na(value)),
+      num_not_observed = sum(not_observed, na.rm=T)) %>%
+    gather(stat, value, -meas, -occasion) %>%
+    ggplot(aes(x = occasion, y = value, fill=stat)) +
+    geom_col() +
+    facet_wrap(~ meas)
+  
+  print(g1)
+  print(g2)
+}
 ```
 
 ```{r, fig.width=12}
-df_long <- df_rawraw %>%
-  mutate_if(is.numeric, neg_to_na) %>%
-  filter(X1FIRKDG == 1) %>%
-  filter(S1_ID == S2_ID) %>%
-  filter(S1_ID == S4_ID) %>%
-  gather(key, value, allOccasionsFor(c(four_level_measures, seven_level_measures))) %>%
-  separate(key, c('occasion', 'meas'), sep=2, remove=F) %>%
-  mutate(occasion = as.numeric(str_sub(occasion, 2))) %>%
-  mutate(not_observed = ifelse(key %in% allOccasionsFor(four_level_measures), value == 5, value == 8))
+do_missing(df_raw = eclsk2011data$raw,
+           vars_of_interest = eclsk2011measures$four_level,
+           thresh = 4)
+```
 
-# Show dist of vars
-df_long %>%
-  ggplot(aes(value)) +
-  geom_histogram() +
-  facet_grid(vars(occasion), vars(meas))
+```{r, fig.width=12}
+do_missing(df_raw = eclsk2011data$raw,
+           vars_of_interest = eclsk2011measures$five_level,
+           thresh = 5)
+```
 
-# Show missingness
-df_long %>%
-  group_by(meas, occasion) %>%
-  summarize(
-    num_na = sum(is.na(value)),
-    num_not_observed = sum(not_observed, na.rm=T)) %>%
-  gather(stat, value, -meas, -occasion) %>%
-  ggplot(aes(x = occasion, y = value, fill=stat)) +
-  geom_col() +
-  facet_wrap(~ meas)
+```{r, fig.width=12}
+do_missing(df_raw = eclsk2011data$raw,
+           vars_of_interest = eclsk2011measures$seven_level,
+           thresh = 7)
 ```
