@@ -8,14 +8,14 @@ make_mmod <- function(data, measures, occasions, name, fiml, outdir) {
   force(fiml)
   force(outdir)
   quo(
-    mmodModel(data, measures, occasions, name, fiml) %>%
+    mmodModel(eclsk2011data[[data]], measures, occasions, name, fiml) %>%
     mxOption('Checkpoint Directory', outdir) %>%
     mxOption('Checkpoint Prefix', paste0(name, '_')) %>%
     mxRestore(chkpt.directory=outdir, chkpt.prefix=paste0(name, '_'))
   )
 }
 
-make_mmod(data=eclsk2011data[[snakemake@params[['data']]]],
+make_mmod(data=snakemake@params[['data']],
           measures=snakemake@params[['measures']],
           occasions=snakemake@params[['occasions']],
           name=snakemake@wildcards[['model']], 
