@@ -19,14 +19,17 @@ allOccasionsFor = function(measures, occasions) {
 
 eclsk2011measures <- list(
   four_level = c(
+    allOccasionsFor(c('XTCHAPP'), c(1,2,3,4,5,6,7,8)),
     allOccasionsFor(c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN'), c(1,2,3,4,5,6,7,8)), # Teacher-rated ATL
     allOccasionsFor(c('PWRKFIN', 'PSHWINT', 'PCONCEN', 'PCHORES', 'PLEARN', 'PCREATV'), c(1,2,4)) # Parent ATL
   ),
   five_level = c( 
+    allOccasionsFor(c('XATTMCQ', 'XINTMCQ'), c(6,7,8)),
     allOccasionsFor(c('TBEZDSL', 'TBSPTLD', 'TBLKARO', 'TBSPQIK', 'TBEZDAC', 'TBEZWAT'), c(6,7,8)), # TMCQ Inhibition
     allOccasionsFor(c('TBHTATN', 'TBHTTLK', 'TBPYATN', 'TBDSATN', 'TBPLANS', 'TBFLWIN', 'TBHTSLW'), c(6,7,8)) # TMCQ Attention
   ),
   seven_level = c(
+    allOccasionsFor(c('XATTNFS', 'XINBCNT'), c(1,2,4)),
     allOccasionsFor(c('TBEZDAC', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBEZDSL', 'TBABSBK'), c(1,2,4)), # CBQ Attentional Focusing
     allOccasionsFor(c('TBWTTSK', 'TBPLNAC', 'TBTRBST', 'TBFLWIN', 'TBAPRRK', 'TBSTNO'), c(1,2,4)) # CBQ Inhibitory Control
   ),
