@@ -341,18 +341,18 @@ studies:
             - TFOLLOW
             - TPERSIS
             - TATTEN
-        TCMQ_I:
-            - TBEZDSL
-            - TBSPTLD
-            - TBLKARO
-            - TBSPQIK
-            - TBEZDAC
-            - TBEZWAT
         TCMQ_A:
-            - TBHTATN
-            - TBHTTLK
+            - TBEZDSL
+            - TBEZDAC
+            - TBLKARO
             - TBPYATN
+            - TBHTATN
             - TBDSATN
+        TMCQ_I:
+            - TBSPTLD
+            - TBSPQIK
+            - TBEZWAT
+            - TBHTTLK
             - TBPLANS
             - TBFLWIN
             - TBHTSLW
