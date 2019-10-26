@@ -70,14 +70,14 @@ measures_theory <- list(
 ```
 
 ```{r}
-mmod_theory <- mmodModel(measures_theory, 'theory', fiml=F)
-mmod_theory_res <- mxRun(mmod_theory)
-summary(mmod_theory_res)
+#mmod_theory <- mmodModel(measures_theory, 'theory', fiml=F)
+#mmod_theory_res <- mxRun(mmod_theory)
+#summary(mmod_theory_res)
 ```
 
 ```{r}
-cfa_theory <- map(occasions, ~cfaModel(measures_theory, paste0('theorycfa', .), ., fiml=T))
-names(cfa_theory) <- map(cfa_theory, 'name')
-cfa_theory_res <- map(cfa_theory, mxRun)
-map(cfa_theory_res, summary)
+#cfa_theory <- map(occasions, ~cfaModel(measures_theory, paste0('theorycfa', .), ., fiml=T))
+#names(cfa_theory) <- map(cfa_theory, 'name')
+#cfa_theory_res <- map(cfa_theory, mxRun)
+#map(cfa_theory_res, summary)
 ```
