@@ -1,0 +1,72 @@
+---
+title: "ECLS-K Growth Model"
+author: "Kyle Husmann"
+date: "September 27, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source('scripts/eclsk2011data.R')
+library(lavaan)
+library(lmerTest)
+
+df <- eclsk2011data$eclsk2011_study1_test %>%
+      select(-one_of(eclsk2011measures$strings)) %>%
+      gather(meas, value, -one_of(eclsk2011measures$factors)) %>%
+      mutate(occasion = as.numeric(str_sub(meas, 2, 2)),
+             meas = str_replace(meas, '\\d+', '')) %>%
+      filter(occasion %in% c(1,2,4)) %>%
+      mutate(occasion = occasion - 1) %>%
+      spread(meas, value) %>%
+      mutate(
+        MATL = (TWORKS + TPERSIS + TSHOWS + TADAPTS + TKEEPS + TATTEN) / 6,
+        MFLOW = (TBGCCLR + TBGCBLD + TBABSBK) / 3,
+        MDIST = (TBEZDSL + TBTRBST + TBEZDAC + TBNOFIN) / 4,
+        MINHIB = (TBSTNO + TBWTTSK + TFOLLOW/4*7 + TBFLWIN) / 4,
+      ) %>%
+      mutate_at(
+        vars(one_of(c('MATL', 'MFLOW', 'MDIST', 'MINHIB', 'XATTNFS', 'XTCHAPP', 'XINBCNT'))),
+        ~scale(.x, scale=F))
+      
+
+```
+
+```{r}
+mod1 <- lmer(XRSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + occasion + (1+occasion|CHILDID), df,
+             REML=F, control=lmerControl(optimizer='bobyqa'))
+mod2 <- lmer(XRSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + occasion + (1+occasion|CHILDID), df,
+             REML=F, control=lmerControl(optimizer='bobyqa'))
+summary(mod1)
+summary(mod2)
+```
+
+```{r}
+mod1 <- lmer(XMSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + occasion + (1+occasion|CHILDID), df,
+             REML=F, control=lmerControl(optimizer='bobyqa'))
+mod2 <- lmer(XMSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + occasion + (1+occasion|CHILDID), df,
+             REML=F, control=lmerControl(optimizer='bobyqa'))
+summary(mod1)
+summary(mod2)
+```
+
+
+```{r}
+#subset <- sample(unique(df$CHILDID), 40)
+subset <- unique(df$CHILDID)
+
+df %>%
+  filter(CHILDID %in% subset) %>%
+  ggplot(aes(x=occasion, y=XMSCALK4, group=CHILDID)) +
+  geom_line(alpha=0.9995^(length(subset)))
+
+```
+
+```{r, fig.height=21, fig.width=6}
+df %>%
+  gather(var, val, XMSCALK4, XRSCALK4, MDIST, MFLOW, MATL, MINHIB, XATTNFS, XTCHAPP, XINBCNT) %>%
+  ggplot(aes(val)) +
+  geom_histogram() +
+  facet_wrap(var~occasion, scales='free_x', ncol=3)
+
+```

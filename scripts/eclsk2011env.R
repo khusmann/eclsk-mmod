@@ -35,14 +35,16 @@ eclsk2011measures <- list(
   ),
   numbers = c(
     allOccasionsFor(c('XNRSSCR'), c(1,2,3,4,5,6,7,8)), # EF: Card sort task
-    allOccasionsFor(c('XRSCALK4', 'XMSCALK4'), c(1,2,3,4,5,6,7,8)), # Reading + Math scale scores
-    allOccasionsFor(c('S_ID'), c(1,2,3,4,5,6,7,8)) # School ID
+    allOccasionsFor(c('XRSCALK4', 'XMSCALK4'), c(1,2,3,4,5,6,7,8)) # Reading + Math scale scores
   ),
   factors = c(
     'CHILDID', # Unique ID
     'X_CHSEX_R', # Sex
     'X_RACETHP_R', # Race
     'X1FIRKDG' # First-time kindergartener
+  ),
+  strings = c(
+    allOccasionsFor(c('S_ID'), c(1,2,3,4,5,6,7,8)) # School ID
   )
 )
 
