@@ -59,7 +59,12 @@ eclsk2011$subset_vars <- map2(eclsk2011$measures$measure,
                               eclsk2011$expandMeasure) %>%
                          unlist()
 
-eclsk2011$subset <- read_rds(SUBSETFILE)
+if (file.exists(SUBSETFILE)) {
+  eclsk2011$subset <- read_rds(SUBSETFILE)
+} else {
+  # TODO: create subset
+  stop('Need to create subset')
+}
 
 eclsk2011$subset_tall <- eclsk2011$measures %>%
       pmap(function (measure, occasions, na_vals, use_label) {
