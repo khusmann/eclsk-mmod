@@ -8,20 +8,14 @@ library(labelled)
 
 eclsk2011 <- list()
 
-eclsk2011$subset <- read_rds(SUBSETFILE)
-
 eclsk2011$ALL_OCCASIONS <- list(1:8)
 
-eclsk2011$expandMeasure <- function(measure, occasions, onlyTimevary=F) {
+eclsk2011$expandMeasure <- function(measure, occasions) {
   # 'TKEEPS', c(1, 2) -> T1KEEPS, T2KEEPS
   if (is.null(occasions)) {
-    if (onlyTimevary) {
-      return(NULL)
-    } else {
-      return(measure)
-    }
+    measure
   } else {
-    return(str_c(str_sub(measure, 1, 1), occasions, str_sub(measure, 2)))
+    str_c(str_sub(measure, 1, 1), occasions, str_sub(measure, 2))
   }
 }
 
@@ -65,12 +59,7 @@ eclsk2011$subset_vars <- map2(eclsk2011$measures$measure,
                               eclsk2011$expandMeasure) %>%
                          unlist()
 
-eclsk2011$subset_vars_timevary <- map2(eclsk2011$measures$measure,
-                                       eclsk2011$measures$occasions,
-                                       eclsk2011$expandMeasure,
-                                       onlyTimevary=T) %>% 
-                                  unlist() %>%
-                                  unique()
+eclsk2011$subset <- read_rds(SUBSETFILE)
 
 eclsk2011$subset_tall <- eclsk2011$measures %>%
       pmap(function (measure, occasions, na_vals, use_label) {
