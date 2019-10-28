@@ -137,16 +137,16 @@ set.seed(9001)
 
 eclsk2011$study1 <- eclsk2011$subset_tall %>%
                     filter(occasion %in% c(1,2,4)) %>%
-                    filter(X1FIRKDG == '1: YES') %>%
+                    filter(X1FIRKDG == '1: YES') %>% # First time kindergartener
                     group_by(CHILDID) %>%
-                    filter(var(as.numeric(S_ID)) == 0) %>%
+                    filter(var(as.numeric(S_ID)) == 0) %>% # At same school all occasions
                     ungroup() %>%
                     full_join(eclsk2011$validation_split(., 'CHILDID'), by='CHILDID')
 
 eclsk2011$study2 <- eclsk2011$subset_tall %>%
                     filter(occasion %in% c(6,7,8)) %>%
-                    filter(X1FIRKDG == '1: YES') %>%
+                    filter(X1FIRKDG == '1: YES') %>% # First time kindergartener
                     group_by(CHILDID) %>%
-                    filter(var(as.numeric(S_ID)) == 0) %>%
+                    filter(var(as.numeric(S_ID)) == 0) %>% # At same school all occasions
                     ungroup() %>%
                     full_join(eclsk2011$validation_split(., 'CHILDID'), by='CHILDID')
