@@ -12,12 +12,16 @@ eclsk2011$subset <- read_rds(SUBSETFILE)
 
 eclsk2011$ALL_OCCASIONS <- list(1:8)
 
-eclsk2011$expandMeasure <- function(measure, occasions) {
+eclsk2011$expandMeasure <- function(measure, occasions, onlyTimevary=F) {
   # 'TKEEPS', c(1, 2) -> T1KEEPS, T2KEEPS
   if (is.null(occasions)) {
-    measure
+    if (onlyTimevary) {
+      return(NULL)
+    } else {
+      return(measure)
+    }
   } else {
-    str_c(str_sub(measure, 1, 1), occasions, str_sub(measure, 2))
+    return(str_c(str_sub(measure, 1, 1), occasions, str_sub(measure, 2)))
   }
 }
 
@@ -32,18 +36,16 @@ eclsk2011$measures <- list(
   ),
   tibble(measure = c( # TMCQ
       'XINTMCQ', 'TBSPTLD', 'TBLKARO', 'TBSPQIK', 'TBEZWAT',
+      'TBEZDAC', 'TBEZDSL', 'TBFLWIN',
       'XATTMCQ', 'TBHTATN', 'TBHTTLK', 'TBPYATN', 'TBDSATN', 'TBPLANS', 'TBHTSLW'
     ), occasions = list(c(6,7,8)), na_vals = list(c(-9, 6)), use_label = F
   ),
   tibble(measure = c( # CBQ
       'XATTNFS', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBABSBK',
+      'TBEZDAC', 'TBEZDSL', 'TBFLWIN',
       'XINBCNT', 'TBWTTSK', 'TBPLNAC', 'TBTRBST', 'TBAPRRK', 'TBSTNO'
     ), occasions = list(c(1,2,4)), na_vals = list(c(-9, 8)), use_label = F
   ),
-  tibble(measure = c( # TMCQ+CBQ
-      'TBEZDAC', 'TBEZDSL', 'TBFLWIN'
-    ), occasions = list(c(1,2,4,6,7,8)), na_vals = list(c(-9, 8)), use_label = F
-  ),  
   tibble(measure = c( # EF Card Sort
       'XNRSSCR'
     ), occasions = eclsk2011$ALL_OCCASIONS, na_vals = list(c(-9, -1)), use_label = F
@@ -63,12 +65,19 @@ eclsk2011$subset_vars <- map2(eclsk2011$measures$measure,
                               eclsk2011$expandMeasure) %>%
                          unlist()
 
+eclsk2011$subset_vars_timevary <- map2(eclsk2011$measures$measure,
+                                       eclsk2011$measures$occasions,
+                                       eclsk2011$expandMeasure,
+                                       onlyTimevary=T) %>% 
+                                  unlist() %>%
+                                  unique()
+
 eclsk2011$subset_tall <- eclsk2011$measures %>%
       pmap(function (measure, occasions, na_vals, use_label) {
         allItems <- eclsk2011$expandMeasure(measure, occasions)
         
         # Subset to current measure 
-        result <- eclsk2011$subset[c('CHILDID', allItems)]
+        result <- eclsk2011$subset[allItems]
         
         # Convert vals to NA 
         if (!is.null(na_vals)) {
@@ -85,18 +94,59 @@ eclsk2011$subset_tall <- eclsk2011$measures %>%
         }
         
         # Everything should be a primitive type now. (dbl, chr, etc.)
-        # Strip all attributes from columns 
+        # Strip all attributes from columns
         result <- mutate_all(result, `attributes<-`, NULL)
-
-        # Convert wide to tall
+        
+        # Rename T1LEARN -> TLEARN_1
         if (!is.null(occasions)) {
-          result <- result %>%
-                    gather(m, v, allItems) %>%
-                    mutate(occasion = as.numeric(str_sub(m, 2, 2)),
-                           m = str_replace(measure, '\\d+', '')) %>%
-                    spread(m, v)           
+          result <- rename_at(result, vars(one_of(allItems)),
+                              str_replace, '(.)(\\d)(.*)', '\\1\\3__\\2')
         }
         
         result
       }) %>%
-  reduce(full_join)
+  bind_cols() %>%
+  add_column(CHILDID = `attributes<-`(eclsk2011$subset$CHILDID, NULL), .before=0) %>%
+  pivot_longer(matches('__'), names_to = c('.value', 'occasion'), names_sep = '__')
+
+eclsk2011$validation_split <- function(df, id) {
+  id_vals <- unique(df[id])
+  
+  train <- id_vals %>% sample_frac(0.5) %>% add_column(split = 'train')
+  test <- id_vals %>% anti_join(train, by=id) %>% add_column(split = 'test')
+  
+  bind_rows(train, test)
+}
+
+eclsk2011$validation_split_new <- function(df, id) {
+  spec = c(train = 0.33, test = 0.33, val = 0.33)
+  
+  id_vals <- unique(df[id]) 
+  
+  tibble(
+    !!!id_vals,
+    split = sample(cut(
+      seq(nrow(id_vals)), 
+      nrow(id_vals)*cumsum(c(0,spec)),
+      labels = names(spec)
+    ))
+  )
+}
+
+set.seed(9001)
+
+eclsk2011$study1 <- eclsk2011$subset_tall %>%
+                    filter(occasion %in% c(1,2,4)) %>%
+                    filter(X1FIRKDG == '1: YES') %>%
+                    group_by(CHILDID) %>%
+                    filter(var(as.numeric(S_ID)) == 0) %>%
+                    ungroup() %>%
+                    full_join(eclsk2011$validation_split(., 'CHILDID'), by='CHILDID')
+
+eclsk2011$study2 <- eclsk2011$subset_tall %>%
+                    filter(occasion %in% c(6,7,8)) %>%
+                    filter(X1FIRKDG == '1: YES') %>%
+                    group_by(CHILDID) %>%
+                    filter(var(as.numeric(S_ID)) == 0) %>%
+                    ungroup() %>%
+                    full_join(eclsk2011$validation_split(., 'CHILDID'), by='CHILDID')
