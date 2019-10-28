@@ -2,8 +2,7 @@ FIML: false
 
 studies:
   eclsk2011_study1:
-    occasions: [1, 2, 4]
-    data: eclsk2011_study1_test
+    data: study1
     models:
       theory:
         ATL: 
@@ -206,8 +205,7 @@ studies:
             - TBGCBLD
             - TBABSBK
   eclsk2011_study2:
-    occasions: [6, 7, 8]
-    data: eclsk2011_study2_test
+    data: study2
     models:
       efa2occ678:
          F1:
