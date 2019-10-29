@@ -15,7 +15,7 @@ rule subset_2011:
   conda:
     'envs/eclsk-analysis.yml'
   script:
-    'scripts/eclsk2011subset.R'
+    'scripts/eclsk2011data.R'
 
 rule make_mmod_2011:
   input:
@@ -37,7 +37,7 @@ rule run_mmod_2011:
     'data/res/{study}/mmod/{model}_result.rds'
   resources:
     mem_mb=4000,
-    walltime_min=4*60
+    walltime_min=6*60
   conda:
     'envs/eclsk-analysis.yml'
   threads: 8

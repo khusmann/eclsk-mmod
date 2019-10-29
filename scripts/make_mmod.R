@@ -1,4 +1,4 @@
-source('scripts/eclsk2011data2.R')
+source('scripts/eclsk2011data.R')
 source('scripts/mxMmodModel.R')
 
 make_mmod <- function(data, measures, name, fiml, outdir) {
