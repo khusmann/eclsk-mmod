@@ -9,11 +9,10 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source('scripts/eclsk2011data2.R')
-source('scripts/mxMmodModel.R')
+library(tidyverse)
 
 mmod_models <- function(studyname) {
-  mmod_models <- Sys.glob(paste0('data/res/', studyname, '/mmod/*_model.rds')) %>%
+  mmod_models <- Sys.glob(paste0('data/res/', studyname, '/*_model.rds')) %>%
                  map(read_rds) %>%
                  map(rlang::eval_tidy)
   names(mmod_models) <- map(mmod_models, 'name')
@@ -21,7 +20,7 @@ mmod_models <- function(studyname) {
 }
 
 mmod_results <- function(studyname) {
-  mmod_results <- Sys.glob(paste0('data/res/', studyname, '/mmod/*_result.rds')) %>%
+  mmod_results <- Sys.glob(paste0('data/res/', studyname, '/*_result.rds')) %>%
                   map(read_rds)
   names(mmod_results) <- map(mmod_results, 'modelName')
   mmod_results

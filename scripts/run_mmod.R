@@ -1,6 +1,5 @@
-library(OpenMx)
-source('scripts/eclsk2011data.R')
-source('scripts/mxMmodModel.R')
+options(tidyverse.quiet = T)
+library(tidyverse)
 
 read_rds(snakemake@input[[1]]) %>%
   rlang::eval_tidy() %>%

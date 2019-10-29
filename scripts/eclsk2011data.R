@@ -1,8 +1,8 @@
 # http://supp.apa.org/psycarticles/supplemental/dev_43_6_1428/dev_43_6_1428_supp.html
 # https://nces.ed.gov/edat
 
-VARFILE <- 'data/res/eclsk2011vars.rds'
-SUBSETFILE <- 'data/res/eclsk_subset_2011.rds'
+VARFILE <- 'data/cache/eclsk2011vars.rds'
+SUBSETFILE <- 'data/cache/eclsk_subset_2011.rds'
 RAWFILE <- 'data/src/eclsk_2011_childk4.sav'
 
 options(tidyverse.quiet = T)
@@ -167,3 +167,5 @@ eclsk2011$study2 <- eclsk2011$subset_tall %>%
                     filter(var(as.numeric(S_ID)) == 0) %>% # At same school all occasions
                     ungroup() %>%
                     full_join(eclsk2011$validation_split(., 'CHILDID'), by='CHILDID')
+
+save(eclsk2011, file = 'data/eclsk2011.rda')

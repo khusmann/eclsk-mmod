@@ -2,7 +2,9 @@ FIML: false
 
 studies:
   eclsk2011_study1:
-    data: study1
+    data: eclsk2011
+    subset: study1
+    split: test
     models:
       theory:
         ATL: 
@@ -205,7 +207,9 @@ studies:
             - TBGCBLD
             - TBABSBK
   eclsk2011_study2:
-    data: study2
+    data: eclsk2011
+    subset: study2
+    split: test
     models:
       efa2occ678:
          F1:
