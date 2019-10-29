@@ -67,6 +67,9 @@ if (!file.exists(SUBSETFILE)) {
   require(haven)
   warning(paste(SUBSETFILE, "doesn't exist, creating..."))
 
+  dir.create(dirname(SUBSETFILE), showWarnings=F)
+  dir.create(dirname(VARFILE), showWarnings=F)
+
   if (file.exists(VARFILE)) {
     avail_vars <- read_rds(VARFILE)
 
