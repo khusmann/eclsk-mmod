@@ -35,6 +35,9 @@
 #' mmod_fit <- mxRun(mmod_model)
 #' summary(mmod_fit)
 
+# TODO: remove?
+library(OpenMx)
+
 mxMmodModel <- function(data, modelName, idvar, timevar, structure, fiml=F) {
   derivName <- function(o, m) {paste0('d', m, '_', o)} # derivName(1, 'nervous') -> dnervous_1
   itemName <- function(o, m) {paste0(m, '_', o)} # itemName(1, 'nervous') -> nervous_1
@@ -104,7 +107,9 @@ mxMmodModel <- function(data, modelName, idvar, timevar, structure, fiml=F) {
       warning('Missing values detected; omitting them.')
     }
     df_subset <- na.omit(data)
-    df_cov <- cov(df_subset)
+    # TODO: Change back to cov
+    #df_cov <- cov(df_subset)
+    df_cov <- cor(df_subset)
     mxd <- mxData(df_cov, type="cov", numObs=nrow(df_subset))
   }
 

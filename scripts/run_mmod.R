@@ -1,4 +1,6 @@
-source('scripts/eclsk2011data.R')
+library(OpenMx)
+source('scripts/eclsk2011data2.R')
+source('scripts/mxMmodModel.R')
 
 read_rds(snakemake@input[[1]]) %>%
   rlang::eval_tidy() %>%

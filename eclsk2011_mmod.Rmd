@@ -9,7 +9,8 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source('scripts/eclsk2011data.R')
+source('scripts/eclsk2011data2.R')
+source('scripts/mxMmodModel.R')
 
 mmod_models <- function(studyname) {
   mmod_models <- Sys.glob(paste0('data/res/', studyname, '/mmod/*_model.rds')) %>%

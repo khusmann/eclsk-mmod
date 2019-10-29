@@ -24,7 +24,7 @@ rule make_mmod_2011:
     'data/res/{study}/mmod/{model}_model.rds'
   params:
     measures=lambda wildcards: config['studies'][wildcards.study]['models'][wildcards.model],
-    data=lambda wildcards: wildcards.study
+    data=lambda wildcards: config['studies'][wildcards.study]['data']
   conda:
     'envs/eclsk-analysis.yml'
   script:

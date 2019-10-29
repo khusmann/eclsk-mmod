@@ -8,7 +8,13 @@ make_mmod <- function(data, measures, name, fiml, outdir) {
   force(fiml)
   force(outdir)
   quo(
-    mxMmodModel(filter(eclsk2011[[data]], split=='test'), name, idvar='CHILDID', timevar='occasions', measures, fiml) %>%
+    eclsk2011[[data]] %>%
+    group_by(occasion) %>%
+    mutate_if(is.numeric, scale) %>%
+    ungroup() %>%
+    # TODO: FIXME
+    #filter(split == 'test') %>%
+    mxMmodModel(name, idvar='CHILDID', timevar='occasion', measures, fiml) %>%
     mxOption('Checkpoint Directory', outdir) %>%
     mxOption('Checkpoint Prefix', paste0(name, '_')) %>%
     mxRestore(chkpt.directory=outdir, chkpt.prefix=paste0(name, '_'))
