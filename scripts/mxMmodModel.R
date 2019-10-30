@@ -107,9 +107,7 @@ mxMmodModel <- function(data, modelName, idvar, timevar, structure, fiml=F) {
       warning('Missing values detected; omitting them.')
     }
     df_subset <- na.omit(data)
-    # TODO: Change back to cov
-    #df_cov <- cov(df_subset)
-    df_cov <- cor(df_subset)
+    df_cov <- cov(df_subset)
     mxd <- mxData(df_cov, type="cov", numObs=nrow(df_subset))
   }
 
