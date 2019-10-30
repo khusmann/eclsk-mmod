@@ -115,15 +115,15 @@ mxMmodModel <- function(data, modelName, idvar, timevar, structure, fiml=F) {
 
   # TODO: CHECK THIS
   # Make weight matrix with Deboeck’s functions
-  #weight <- ContrastsGOLD(occasions, length(occasions) - 1)
-  #weightList <- as.list(as.data.frame(t(weight)))
+  weight <- ContrastsGOLD(occasions, length(occasions) - 1)
+  weightList <- as.list(as.data.frame(t(weight)))
 
   # Make weight matrix without Deboeck’s functions
-  weight <- matrix(c(1/3, 1/3, 1/3,
-                     -1,   0, 1 ,
-                     1/2,  -1, 1/2),
-                   nrow=3, ncol=3)
-  weightList <- as.list(as.data.frame(t(solve(weight))))
+  #weight <- matrix(c(1/3, 1/3, 1/3,
+  #                   -1,   0, 1 ,
+  #                   1/2,  -1, 1/2),
+  #                 nrow=3, ncol=3)
+  #weightList <- as.list(as.data.frame(t(solve(weight))))
 
   do.call('mxModel', c(list(
     modelName, mxd, type="RAM",
