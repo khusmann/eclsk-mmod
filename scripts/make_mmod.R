@@ -17,8 +17,7 @@ make_mmod <- function(data, subset, split, measures, name, fiml, outdir) {
     group_by(occasion) %>%
     mutate_if(is.numeric, scale) %>%
     ungroup() %>%
-    # TODO: FIXME
-    #filter(split == !!split) %>%
+    filter(split == !!split) %>%
     mxMmodModel(name, idvar='CHILDID', timevar='occasion', measures, fiml) %>%
     mxOption('Checkpoint Directory', outdir) %>%
     mxOption('Checkpoint Prefix', paste0(name, '_')) %>%
