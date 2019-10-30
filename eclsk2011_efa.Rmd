@@ -21,13 +21,13 @@ filter_occasion <- function(data, o) {
     na.omit()
 }
 
-do_parallel <- function(occasion, data) {
+do_parallel <- function(data, occasion) {
   data %>%
     filter_occasion(occasion) %>%
     fa.parallel()
 }
 
-do_explore <- function(occasion, nfactors, data) {
+do_explore <- function(data, occasion, nfactors) {
   data %>%
     filter_occasion(occasion) %>%
     fa(nfactors, rotate='promax')
@@ -50,7 +50,7 @@ study1_occasions <- c(1,2,4)
 
 ```{r}
 study1_parallel <- study1_occasions %>%
-                   map(do_parallel, study1_data)
+                   map(~do_parallel(study1_data, .))
 ```
 
 ```{r}
@@ -79,7 +79,7 @@ study2_occasions <- c(6,7,8)
 
 ```{r}
 study2_parallel <- study2_occasions %>%
-                   map(do_parallel, study2_data)
+                   map(~do_parallel(study2_data, .))
 ```
 
 
