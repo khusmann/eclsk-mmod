@@ -128,9 +128,17 @@ eclsk2011$subset_tall <- eclsk2011$measures %>%
   bind_cols() %>%
   add_column(CHILDID = `attributes<-`(eclsk2011$subset$CHILDID, NULL), .before=0) %>%
   pivot_longer(matches('__'), names_to = c('.value', 'occasion'), names_sep = '__',
-               names_ptypes = list(occasion = integer()))
+               names_ptypes = list(occasion = integer())) %>%
+  mutate(grade = case_when(occasion == 1 ~ 0,
+                           occasion == 2 ~ 0.5,
+                           occasion == 3 ~ 1,
+                           occasion == 4 ~ 1.5,
+                           occasion == 5 ~ 2,
+                           occasion == 6 ~ 2.5,
+                           occasion == 7 ~ 3.5,
+                           occasion == 8 ~ 4.5))
 
-eclsk2011$validation_split <- function(df, id) {
+eclsk2011$validation_split_old <- function(df, id) {
   id_vals <- unique(df[id])
   
   train <- id_vals %>% sample_frac(0.5) %>% add_column(split = 'train')
@@ -139,7 +147,7 @@ eclsk2011$validation_split <- function(df, id) {
   bind_rows(train, test)
 }
 
-eclsk2011$validation_split_new <- function(df, id) {
+eclsk2011$validation_split <- function(df, id) {
   spec = c(train = 0.33, test = 0.33, val = 0.33)
   
   id_vals <- unique(df[id]) 

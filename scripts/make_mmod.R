@@ -15,10 +15,10 @@ make_mmod <- function(data, subset, split, measures, name, fiml, outdir) {
     load(paste0('data/', data, '.rda'))
     get(data)[[subset]] %>%
     group_by(occasion) %>%
-    mutate_if(is.numeric, scale) %>%
+    mutate_at(vars(one_of(unlist(measures))), scale) %>%
     ungroup() %>%
     filter(split == !!split) %>%
-    mxMmodModel(name, idvar='CHILDID', timevar='occasion', measures, fiml) %>%
+    mxMmodModel(name, idvar='CHILDID', timevar='grade', measures, fiml) %>%
     mxOption('Checkpoint Directory', outdir) %>%
     mxOption('Checkpoint Prefix', paste0(name, '_')) %>%
     mxRestore(chkpt.directory=outdir, chkpt.prefix=paste0(name, '_'))
