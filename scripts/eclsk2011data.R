@@ -127,7 +127,8 @@ eclsk2011$subset_tall <- eclsk2011$measures %>%
       }) %>%
   bind_cols() %>%
   add_column(CHILDID = `attributes<-`(eclsk2011$subset$CHILDID, NULL), .before=0) %>%
-  pivot_longer(matches('__'), names_to = c('.value', 'occasion'), names_sep = '__')
+  pivot_longer(matches('__'), names_to = c('.value', 'occasion'), names_sep = '__',
+               names_ptypes = list(occasion = integer()))
 
 eclsk2011$validation_split <- function(df, id) {
   id_vals <- unique(df[id])
