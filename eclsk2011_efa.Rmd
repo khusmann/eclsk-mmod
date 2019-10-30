@@ -3,74 +3,92 @@ title: "Measurement models for executive function"
 author: "Kyle Husmann"
 date: "March 25, 2019"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source('scripts/eclsk2011data.R')
+library(tidyverse)
 library(psych)
 
-df_explore <- function(o, df_train, to_explore) {
-  na.omit(df_train[itemName(o, to_explore)])
+data(eclsk2011)
+
+filter_occasion <- function(data, o) {
+  data %>%
+    filter(occasion == o) %>%
+    select(-occasion) %>%
+    na.omit()
 }
 
-do_parallel <- function(occasions, df_train, to_explore) {
-  map(occasions, ~fa.parallel(df_explore(., df_train, to_explore))) 
+do_parallel <- function(occasion, data) {
+  data %>%
+    filter_occasion(occasion) %>%
+    fa.parallel()
 }
 
-do_explore <- function(occasions, df_train, to_explore, num_factors) {
-  fa_res <-map(num_factors, function(i) {
-    tmp <- map(occasions, ~fa(df_explore(., df_train, to_explore), nfactors=i, rotate='promax'))
-    names(tmp) <- map_chr(occasions, ~paste0('occ', .))
-    tmp
-  })
-  names(fa_res) <- map_chr(num_factors, ~paste0('efa', .))
-  iwalk(fa_res, function (i, ni) {
-    iwalk(i, function(o, no) {
-      fa.diagram(o, main=paste0(ni, '+', no))
-      #print(loadings(o))
-    })
-  })
-  fa_res
+do_explore <- function(occasion, nfactors, data) {
+  data %>%
+    filter_occasion(occasion) %>%
+    fa(nfactors, rotate='promax')
 }
 ```
 
-# Parallel Analysis
+# Study 1
 
 ```{r}
-study1_explore <- c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN',
-                    'TBEZDAC', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBEZDSL', 'TBABSBK',
-                    'TBWTTSK', 'TBTRBST', 'TBFLWIN', 'TBSTNO') # Omit: 'TBPLNAC', 'TBAPRRK'
-pa_res1 <- do_parallel(occasions = c(1, 2, 4),
-                       df_train = eclsk2011data$eclsk2011_study1_train,
-                       to_explore = study1_explore)
-```
+study1_measures <- c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN',
+                     'TBEZDAC', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBEZDSL', 'TBABSBK',
+                     'TBWTTSK', 'TBTRBST', 'TBFLWIN', 'TBSTNO') # Omit: 'TBPLNAC', 'TBAPRRK'
 
-# EFA with 2, 3, 4, 5 factors
+study1_data <- eclsk2011$study1 %>%
+               filter(split == 'train') %>%
+               select(c('occasion', study1_measures))
 
-```{r}
-fa_res1 <- do_explore(occasions = c(1, 2, 4),
-                      df_train = eclsk2011data$eclsk2011_study1_train,
-                      to_explore = study1_explore,
-                      num_factors = c(2, 3, 4, 5))
+study1_occasions <- c(1,2,4)
 ```
 
 ```{r}
-study2_explore <- c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN',
+study1_parallel <- study1_occasions %>%
+                   map(do_parallel, study1_data)
+```
+
+```{r}
+study1_fa <- expand_grid(nfactors = c(2,3,4,5),
+                         occasion = study1_occasions) %>%
+             mutate(fa_result = pmap(., do_explore, study1_data))
+
+pwalk(study1_fa, function(occasion, nfactors, fa_result) {
+  fa.diagram(fa_result, main=paste0('Occasion: ', occasion, ', nF: ', nfactors))
+})
+```
+
+# Study 2
+
+```{r}
+study2_measures <- c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN',
                    'TBEZDSL', 'TBSPTLD', 'TBLKARO', 'TBSPQIK', 'TBEZDAC', 'TBEZWAT', 'TBHTATN',
                    'TBHTTLK', 'TBPYATN', 'TBDSATN', 'TBPLANS', 'TBFLWIN', 'TBHTSLW')
-pa_res2 <- do_parallel(occasions = c(6, 7, 8),
-                       df_train = eclsk2011data$eclsk2011_study2_train,
-                       to_explore = study2_explore)
+
+study2_data <- eclsk2011$study2 %>%
+               filter(split == 'train') %>%
+               select(c('occasion', study2_measures))
+
+study2_occasions <- c(6,7,8)
 ```
 
-# EFA with 2, 3, 4, 5 factors
+```{r}
+study2_parallel <- study2_occasions %>%
+                   map(do_parallel, study2_data)
+```
+
 
 ```{r}
-fa_res2 <- do_explore(occasions = c(6, 7, 8),
-                      df_train = eclsk2011data$eclsk2011_study2_train,
-                      to_explore = study2_explore,
-                      num_factors = c(2, 3, 4, 5))
+study2_fa <- expand_grid(nfactors = c(2,3,4,5),
+                         occasion = study2_occasions) %>%
+             mutate(fa_result = pmap(., do_explore, study2_data))
+
+pwalk(study2_fa, function(occasion, nfactors, fa_result) {
+  fa.diagram(fa_result, main=paste0('Occasion: ', occasion, ', nF: ', nfactors))
+})
 ```
