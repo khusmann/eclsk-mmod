@@ -29,6 +29,7 @@ mmod_results <- function(studyname) {
 mmod_fits <- function(mmod_results) {
   tibble(
     name=map_chr(mmod_results, 'modelName'),
+    n=map_dbl(mmod_results, 'numObs'),
     chisq=map_dbl(mmod_results, 'Chi'),
     dof=map_dbl(mmod_results, 'ChiDoF'),
     `-2ll`=map_dbl(mmod_results, 'Minus2LogLikelihood'),
