@@ -148,7 +148,7 @@ eclsk2011$validation_split_old <- function(df, id) {
 }
 
 eclsk2011$validation_split <- function(df, id) {
-  spec = c(train = 0.33, test = 0.33, val = 0.33)
+  spec = c(train = 0.25, test = 0.25, val = 0.5)
   
   id_vals <- unique(df[id]) 
   
