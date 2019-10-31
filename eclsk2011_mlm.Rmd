@@ -13,34 +13,32 @@ library(lmerTest)
 data(eclsk2011)
 
 df <- eclsk2011$study1 %>%
-      filter(split == 'test') %>%
-      mutate(occasion = as.numeric(occasion) - 1) %>%
+      filter(split == 'val') %>%
       mutate(
-        MATL = (TWORKS + TPERSIS + TSHOWS + TADAPTS + TKEEPS + TATTEN) / 6,
-        MFLOW = (TBGCCLR + TBGCBLD + TBABSBK) / 3,
-        MDIST = (TBEZDSL + TBTRBST + TBEZDAC + TBNOFIN) / 4,
-        MINHIB = (TBSTNO + TBWTTSK + TFOLLOW/4*7 + TBFLWIN) / 4,
-      ) %>%
-      mutate_at(
-        vars(one_of(c('MATL', 'MFLOW', 'MDIST', 'MINHIB', 'XATTNFS', 'XTCHAPP', 'XINBCNT'))),
-        ~scale(.x, scale=F))
+        # TODO: is this ok?
+        TFOLLOW_sc = TFOLLOW/4*7,
+        MATL = rowMeans(cbind(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS, TATTEN), na.rm=T),
+        MFLOW = rowMeans(cbind(TBGCCLR, TBGCBLD, TBABSBK), na.rm=T),
+        MDIST = rowMeans(cbind(TBEZDSL, TBTRBST, TBEZDAC, TBNOFIN), na.rm=T),
+        MINHIB = rowMeans(cbind(TBSTNO, TBWTTSK, TFOLLOW_sc, TBFLWIN), na.rm=T)
+      ) 
       
 
 ```
 
 ```{r}
-mod1 <- lmer(XRSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + occasion + (1+occasion|CHILDID), df,
+mod1 <- lmer(XRSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
-mod2 <- lmer(XRSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + occasion + (1+occasion|CHILDID), df,
+mod2 <- lmer(XRSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
 summary(mod1)
 summary(mod2)
 ```
 
 ```{r}
-mod1 <- lmer(XMSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + occasion + (1+occasion|CHILDID), df,
+mod1 <- lmer(XMSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
-mod2 <- lmer(XMSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + occasion + (1+occasion|CHILDID), df,
+mod2 <- lmer(XMSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
 summary(mod1)
 summary(mod2)
@@ -53,7 +51,7 @@ subset <- unique(df$CHILDID)
 
 df %>%
   filter(CHILDID %in% subset) %>%
-  ggplot(aes(x=occasion, y=XMSCALK4, group=CHILDID)) +
+  ggplot(aes(x=grade, y=XMSCALK4, group=CHILDID)) +
   geom_line(alpha=0.9995^(length(subset)))
 
 ```
@@ -63,6 +61,6 @@ df %>%
   gather(var, val, XMSCALK4, XRSCALK4, MDIST, MFLOW, MATL, MINHIB, XATTNFS, XTCHAPP, XINBCNT) %>%
   ggplot(aes(val)) +
   geom_histogram() +
-  facet_wrap(var~occasion, scales='free_x', ncol=3)
+  facet_wrap(var~grade, scales='free_x', ncol=3)
 
 ```
