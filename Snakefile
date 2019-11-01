@@ -1,6 +1,6 @@
 configfile: 'config.yml'
 
-localrules: all, eclsk2011data, make_mmods
+localrules: all, eclsk2011data
 
 rule all:
   input:
@@ -17,31 +17,22 @@ rule eclsk2011data:
   script:
     'scripts/eclsk2011data.R'
 
-rule make_mmods:
+rule run_mmods:
   input:
     'data/eclsk2011.rda'
   output:
-    'data/res/{study}/{model}_model.rds'
+    'data/res/{study}/{model}_result.rds'
   params:
     measures=lambda wildcards: config['studies'][wildcards.study]['models'][wildcards.model],
     data=lambda wildcards: config['studies'][wildcards.study]['data'],
     subset=lambda wildcards: config['studies'][wildcards.study]['subset'],
     split=lambda wildcards: config['studies'][wildcards.study]['split'],
-  conda:
-    'envs/eclsk-analysis.yml'
-  script:
-    'scripts/make_mmod.R'
-
-rule run_mmods:
-  input:
-    'data/res/{study}/{model}_model.rds'
-  output:
-    'data/res/{study}/{model}_result.rds'
+    model_save='data/res/{study}/{model}_model.rds',
   resources:
     mem_mb=4000,
     walltime_min=8*60
+  threads: 8
   conda:
     'envs/eclsk-analysis.yml'
-  threads: 8
   script:
     'scripts/run_mmod.R'
