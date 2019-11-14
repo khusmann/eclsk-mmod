@@ -48,7 +48,7 @@ eclsk2011$measures <- list(
     ), occasions = eclsk2011$ALL_OCCASIONS, na_vals = list(c(-9, -1)), use_label = F
   ),   
   tibble(measure = c( # Reading / math scores
-    'XRSCALK4', 'XMSCALK4'
+      'XRSCALK4', 'XMSCALK4'
     ), occasions = eclsk2011$ALL_OCCASIONS, na_vals = list(-9), use_label = F
   ),
   tibble(measure = 'X_RACETHP_R', na_vals = list(-9), use_label = T),
@@ -93,7 +93,7 @@ if (!file.exists(SUBSETFILE)) {
 eclsk2011$subset <- read_rds(SUBSETFILE)
 
 eclsk2011$subset_tall <- eclsk2011$measures %>%
-      pmap(function (measure, occasions, na_vals, use_label) {
+      pmap(function(measure, occasions, na_vals, use_label) {
         allItems <- eclsk2011$expandMeasure(measure, occasions)
         
         # Subset to current measure 
@@ -117,7 +117,7 @@ eclsk2011$subset_tall <- eclsk2011$measures %>%
         # Strip all attributes from columns
         result <- mutate_all(result, `attributes<-`, NULL)
         
-        # Rename T1LEARN -> TLEARN_1
+        # Rename T1LEARN -> TLEARN__1
         if (!is.null(occasions)) {
           result <- rename_at(result, vars(one_of(allItems)),
                               str_replace, '(.)(\\d)(.*)', '\\1\\3__\\2')
@@ -163,6 +163,8 @@ eclsk2011$validation_split <- function(df, id) {
 }
 
 set.seed(9001)
+
+# TODO: Check that var==0 isn't having rounding errors. use ?near
 
 eclsk2011$study1 <- eclsk2011$subset_tall %>%
                     filter(occasion %in% c(1,2,4)) %>%
