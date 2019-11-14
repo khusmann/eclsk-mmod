@@ -14,9 +14,9 @@ data(eclsk2011)
 
 df <- eclsk2011$study1 %>%
       filter(split == 'val') %>%
-#      filter_at(vars(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS, TATTEN,
-#                            TBGCCLR, TBGCBLD, TBABSBK, TBEZDSL, TBTRBST, TBEZDAC, TBNOFIN,
-#                            TBSTNO, TBWTTSK, TFOLLOW, TBFLWIN), all_vars(!is.na(.))) %>%
+      filter_at(vars(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS, TATTEN,
+                            TBGCCLR, TBGCBLD, TBABSBK, TBEZDSL, TBTRBST, TBEZDAC, TBNOFIN,
+                            TBSTNO, TBWTTSK, TFOLLOW, TBFLWIN), all_vars(!is.na(.))) %>%
       mutate(
         TFOLLOW_sc = TFOLLOW/4*7,
         TATTEN_sc = TATTEN/4*7
@@ -72,6 +72,7 @@ mod1 <- lmer(XRSCALK4 ~ OATTEN + OATL + OFLOW + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
 mod2 <- lmer(XRSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
+anova(mod1, mod2)
 summary(mod1)
 summary(mod2)
 ```
@@ -81,6 +82,7 @@ mod1 <- lmer(XMSCALK4 ~ OATTEN + OATL + OFLOW + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
 mod2 <- lmer(XMSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
+anova(mod1, mod2)
 summary(mod1)
 summary(mod2)
 ```
@@ -94,6 +96,7 @@ mod1 <- lmer(XRSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + grade + (1+grade|CHILDID
              REML=F, control=lmerControl(optimizer='bobyqa'))
 mod2 <- lmer(XRSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
+anova(mod1, mod2)
 summary(mod1)
 summary(mod2)
 ```
@@ -103,6 +106,7 @@ mod1 <- lmer(XMSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + grade + (1+grade|CHILDID
              REML=F, control=lmerControl(optimizer='bobyqa'))
 mod2 <- lmer(XMSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
+anova(mod1, mod2)
 summary(mod1)
 summary(mod2)
 ```
@@ -116,6 +120,7 @@ mod1 <- lmer(XRSCALK4 ~ PDIST + PFLOW + PATL + PINHIB + PSIT + grade + (1+grade|
              REML=F, control=lmerControl(optimizer='bobyqa'))
 mod2 <- lmer(XRSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
+anova(mod1, mod2)
 summary(mod1)
 summary(mod2)
 ```
@@ -125,6 +130,7 @@ mod1 <- lmer(XMSCALK4 ~ PDIST + PFLOW + PATL + PINHIB + PSIT + grade + (1+grade|
              REML=F, control=lmerControl(optimizer='bobyqa'))
 mod2 <- lmer(XMSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
+anova(mod1, mod2)
 summary(mod1)
 summary(mod2)
 ```
