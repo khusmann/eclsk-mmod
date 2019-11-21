@@ -65,77 +65,65 @@ filter(is.na(df$XXATTNFS) != is.na(df$XATTNFS))
 (sum(is.na(df$XXINBCNT) != is.na(df$XINBCNT)))
 
 ```
-# Best 3-factor
+# Make models
 
 ```{r}
-mod1 <- lmer(XRSCALK4 ~ OATTEN + OATL + OFLOW + grade + (1+grade|CHILDID), df,
+models_read <- list(
+  theory = lmer(XRSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
+             REML=F, control=lmerControl(optimizer='bobyqa')),
+  
+  f3 = lmer(XRSCALK4 ~ OATTEN + OATL + OFLOW + grade + (1+grade|CHILDID), df,
+            REML=F, control=lmerControl(optimizer='bobyqa')),
+  
+  f4 = lmer(XRSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + grade + (1+grade|CHILDID), df,
+             REML=F, control=lmerControl(optimizer='bobyqa')),
+  
+  f5 = lmer(XRSCALK4 ~ PDIST + PFLOW + PATL + PINHIB + PSIT + grade + (1+grade|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
-mod2 <- lmer(XRSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
-             REML=F, control=lmerControl(optimizer='bobyqa'))
-anova(mod1, mod2)
-summary(mod1)
-summary(mod2)
+)
+
+models_math <- list(
+  theory = lmer(XMSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
+                REML=F, control=lmerControl(optimizer='bobyqa')),
+  
+  f3 = lmer(XMSCALK4 ~ OATTEN + OATL + OFLOW + grade + (1+grade|CHILDID), df,
+            REML=F, control=lmerControl(optimizer='bobyqa')),
+  
+  f4 = lmer(XMSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + grade + (1+grade|CHILDID), df,
+             REML=F, control=lmerControl(optimizer='bobyqa')),
+  
+  f5 = lmer(XMSCALK4 ~ PDIST + PFLOW + PATL + PINHIB + PSIT + grade + (1+grade|CHILDID), df,
+            REML=F, control=lmerControl(optimizer='bobyqa'))
+)
 ```
 
 ```{r}
-mod1 <- lmer(XMSCALK4 ~ OATTEN + OATL + OFLOW + grade + (1+grade|CHILDID), df,
-             REML=F, control=lmerControl(optimizer='bobyqa'))
-mod2 <- lmer(XMSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
-             REML=F, control=lmerControl(optimizer='bobyqa'))
-anova(mod1, mod2)
-summary(mod1)
-summary(mod2)
-```
+models <- tibble(
+  type = c('read', 'math'),
+  model = list(models_read, models_math),
+  struct = map(model, names)
+) %>%
+  unnest(c(model, struct)) %>%
+  mutate(id = str_c(type, struct, sep='.'),
+         summary = map(model, summary))
 
-#################################################################
+models_summary <- models$summary %>%
+  set_names(models$id)
 
-# Best 4-factor
-
-```{r}
-mod1 <- lmer(XRSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + grade + (1+grade|CHILDID), df,
-             REML=F, control=lmerControl(optimizer='bobyqa'))
-mod2 <- lmer(XRSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
-             REML=F, control=lmerControl(optimizer='bobyqa'))
-anova(mod1, mod2)
-summary(mod1)
-summary(mod2)
+(results <- models %>%
+  select(type, struct) %>%
+  bind_cols(map_dfr(map(models$summary, 'AICtab'), as.list)))
 ```
 
 ```{r}
-mod1 <- lmer(XMSCALK4 ~ MDIST + MFLOW + MATL + MINHIB + grade + (1+grade|CHILDID), df,
-             REML=F, control=lmerControl(optimizer='bobyqa'))
-mod2 <- lmer(XMSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
-             REML=F, control=lmerControl(optimizer='bobyqa'))
-anova(mod1, mod2)
-summary(mod1)
-summary(mod2)
-```
-
-#################################################################
-
-# Best 5-factor
-
-```{r}
-mod1 <- lmer(XRSCALK4 ~ PDIST + PFLOW + PATL + PINHIB + PSIT + grade + (1+grade|CHILDID), df,
-             REML=F, control=lmerControl(optimizer='bobyqa'))
-mod2 <- lmer(XRSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
-             REML=F, control=lmerControl(optimizer='bobyqa'))
-anova(mod1, mod2)
-summary(mod1)
-summary(mod2)
+models_summary$read.f4
+models_summary$read.theory
 ```
 
 ```{r}
-mod1 <- lmer(XMSCALK4 ~ PDIST + PFLOW + PATL + PINHIB + PSIT + grade + (1+grade|CHILDID), df,
-             REML=F, control=lmerControl(optimizer='bobyqa'))
-mod2 <- lmer(XMSCALK4 ~ XATTNFS + XTCHAPP + XINBCNT + grade + (1+grade|CHILDID), df,
-             REML=F, control=lmerControl(optimizer='bobyqa'))
-anova(mod1, mod2)
-summary(mod1)
-summary(mod2)
+models_summary$math.f4
+models_summary$math.theory
 ```
-
-#################################################################
 
 ```{r}
 #subset <- sample(unique(df$CHILDID), 40)
@@ -154,5 +142,4 @@ df %>%
   ggplot(aes(val)) +
   geom_histogram() +
   facet_wrap(var~grade, scales='free_x', ncol=3)
-
 ```
