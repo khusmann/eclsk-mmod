@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(lmerTest)
 library(broom.mixed)
-library(kableExtra) 
+library(kableExtra)
 
 
 data(eclsk2011)
@@ -23,6 +23,8 @@ df <- eclsk2011$study1 %>%
                             TBGCCLR, TBGCBLD, TBABSBK, TBEZDSL, TBTRBST, TBEZDAC, TBNOFIN,
                             TBSTNO, TBWTTSK, TFOLLOW, TBFLWIN), all_vars(!is.na(.))) %>%
       mutate(
+#        TFOLLOW_sc = TFOLLOW,
+#        TATTEN_sc = TATTEN,
         TFOLLOW_sc = TFOLLOW/4*7,
         TATTEN_sc = TATTEN/4*7
       ) %>%
