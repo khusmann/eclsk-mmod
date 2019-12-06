@@ -29,31 +29,31 @@ df <- eclsk2011$study1 %>%
         TATTEN_sc = TATTEN/4*7
       ) %>%
       mutate(
-         OATL_F1 = rowMeans(cbind(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS), na.rm=T),
-         OENG_F2 = rowMeans(cbind(TBGCCLR, TBGCBLD, TBABSBK), na.rm=T),
-         OATTEN_F3 = rowMeans(cbind(TBSTNO, 8-TBTRBST, TFOLLOW_sc, TBWTTSK, 8-TBEZDSL,
-                                 TBFLWIN, 8-TBEZDAC, TATTEN_sc, 8-TBNOFIN), na.rm=T)
+         OATL_F1 = scale(rowMeans(cbind(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS), na.rm=T)),
+         OENG_F2 = scale(rowMeans(cbind(TBGCCLR, TBGCBLD, TBABSBK), na.rm=T)),
+         OATTEN_F3 = scale(rowMeans(cbind(TBSTNO, 8-TBTRBST, TFOLLOW_sc, TBWTTSK, 8-TBEZDSL,
+                                 TBFLWIN, 8-TBEZDAC, TATTEN_sc, 8-TBNOFIN), na.rm=T))
       ) %>%
       mutate(
-        MATL_F1 = rowMeans(cbind(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS, TATTEN), na.rm=T),
-        MENG_F2 = rowMeans(cbind(TBGCCLR, TBGCBLD, TBABSBK), na.rm=T),
-        MINHIB_F4 = rowMeans(cbind(TBSTNO, TBWTTSK, TFOLLOW_sc, TBFLWIN), na.rm=T),
-        MATTEN_F3 = rowMeans(cbind(8-TBEZDSL, 8-TBTRBST, 8-TBEZDAC, 8-TBNOFIN), na.rm=T)
+        MATL_F1 = scale(rowMeans(cbind(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS, TATTEN), na.rm=T)),
+        MENG_F2 = scale(rowMeans(cbind(TBGCCLR, TBGCBLD, TBABSBK), na.rm=T)),
+        MINHIB_F4 = scale(rowMeans(cbind(TBSTNO, TBWTTSK, TFOLLOW_sc, TBFLWIN), na.rm=T)),
+        MATTEN_F3 = scale(rowMeans(cbind(8-TBEZDSL, 8-TBTRBST, 8-TBEZDAC, 8-TBNOFIN), na.rm=T))
       ) %>%
       mutate(
-         PATL_F1 = rowMeans(cbind(TWORKS, TSHOWS, TPERSIS, TADAPTS, TATTEN, TKEEPS), na.rm=T),
-         PENG_F2 = rowMeans(cbind(TBGCCLR, TBGCBLD, TBABSBK), na.rm=T),
-         PINHIB_F4 = rowMeans(cbind(TBSTNO, TBWTTSK, TFOLLOW_sc, TBFLWIN), na.rm=T),
-         PATTEN_F3 = rowMeans(cbind(8-TBEZDAC, 8-TBNOFIN), na.rm=T),
-         PATTEN2_F5 = rowMeans(cbind(8-TBEZDSL, 8-TBTRBST), na.rm=T)
+         PATL_F1 = scale(rowMeans(cbind(TWORKS, TSHOWS, TPERSIS, TADAPTS, TATTEN, TKEEPS), na.rm=T)),
+         PENG_F2 = scale(rowMeans(cbind(TBGCCLR, TBGCBLD, TBABSBK), na.rm=T)),
+         PINHIB_F4 = scale(rowMeans(cbind(TBSTNO, TBWTTSK, TFOLLOW_sc, TBFLWIN), na.rm=T)),
+         PATTEN_F3 = scale(rowMeans(cbind(8-TBEZDAC, 8-TBNOFIN), na.rm=T)),
+         PATTEN2_F5 = scale(rowMeans(cbind(8-TBEZDSL, 8-TBTRBST), na.rm=T))
       ) %>%
       mutate(
-        XTCHAPP_F1 = rowMeans(cbind(TWORKS, TPERSIS, TSHOWS, TADAPTS,
-                                  TKEEPS, TATTEN, TFOLLOW), na.rm=T),
-        XATTNFS_F3 = rowMeans(cbind(8-TBEZDAC, 8-TBNOFIN, 8-TBEZDSL,
-                                  TBGCBLD, TBGCCLR, TBABSBK), na.rm=T),
-        XINBCNT_F4 = rowMeans(cbind(8-TBTRBST, TBSTNO, TBWTTSK,
-                                  TBFLWIN, TBPLNAC, TBAPRRK), na.rm=T))
+        XTCHAPP_F1 = scale(rowMeans(cbind(TWORKS, TPERSIS, TSHOWS, TADAPTS,
+                                  TKEEPS, TATTEN, TFOLLOW), na.rm=T)),
+        XATTNFS_F3 = scale(rowMeans(cbind(8-TBEZDAC, 8-TBNOFIN, 8-TBEZDSL,
+                                  TBGCBLD, TBGCCLR, TBABSBK), na.rm=T)),
+        XINBCNT_F4 = scale(rowMeans(cbind(8-TBTRBST, TBSTNO, TBWTTSK,
+                                  TBFLWIN, TBPLNAC, TBAPRRK), na.rm=T)))
 ```
 
 ```{r}
@@ -76,30 +76,30 @@ filter(is.na(df$XATTNFS_F3) != is.na(df$XATTNFS))
 
 ```{r}
 models_read <- list(
-  theory = lmer(XRSCALK4 ~ grade + XATTNFS_F3 + XTCHAPP_F1 + XINBCNT_F4 + (1+grade|CHILDID), df,
+  theory = lmer(XRTHETK5 ~ grade + XATTNFS_F3 + XTCHAPP_F1 + XINBCNT_F4 + (1|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa')),
   
-  f3 = lmer(XRSCALK4 ~ grade + OATL_F1 + OENG_F2 + OATTEN_F3 + (1+grade|CHILDID), df,
+  f3 = lmer(XRTHETK5 ~ grade + OATL_F1 + OENG_F2 + OATTEN_F3 + (1|CHILDID), df,
             REML=F, control=lmerControl(optimizer='bobyqa')),
   
-  f4 = lmer(XRSCALK4 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MATTEN_F3 + (1+grade|CHILDID), df,
+  f4 = lmer(XRTHETK5 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MATTEN_F3 + (1|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa')),
   
-  f5 = lmer(XRSCALK4 ~ grade + PATL_F1 + PENG_F2 + PINHIB_F4 + PATTEN_F3 + PATTEN2_F5 + (1+grade|CHILDID), df,
+  f5 = lmer(XRTHETK5 ~ grade + PATL_F1 + PENG_F2 + PINHIB_F4 + PATTEN_F3 + PATTEN2_F5 + (1|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa'))
 )
 
 models_math <- list(
-  theory = lmer(XMSCALK4 ~ grade + XATTNFS_F3 + XTCHAPP_F1 + XINBCNT_F4 + (1+grade|CHILDID), df,
+  theory = lmer(XMTHETK5 ~ grade + XATTNFS_F3 + XTCHAPP_F1 + XINBCNT_F4 + (1|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa')),
   
-  f3 = lmer(XMSCALK4 ~ grade + OATL_F1 + OENG_F2 + OATTEN_F3 + (1+grade|CHILDID), df,
+  f3 = lmer(XMTHETK5 ~ grade + OATL_F1 + OENG_F2 + OATTEN_F3 + (1|CHILDID), df,
             REML=F, control=lmerControl(optimizer='bobyqa')),
   
-  f4 = lmer(XMSCALK4 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MATTEN_F3 + (1+grade|CHILDID), df,
+  f4 = lmer(XMTHETK5 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MATTEN_F3 + (1|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa')),
   
-  f5 = lmer(XMSCALK4 ~ grade + PATL_F1 + PENG_F2 + PINHIB_F4 + PATTEN_F3 + PATTEN2_F5 + (1+grade|CHILDID), df,
+  f5 = lmer(XMTHETK5 ~ grade + PATL_F1 + PENG_F2 + PINHIB_F4 + PATTEN_F3 + PATTEN2_F5 + (1|CHILDID), df,
              REML=F, control=lmerControl(optimizer='bobyqa')) 
 )
 ```
@@ -138,9 +138,9 @@ table_col <- function(mod) {
     } else {
       sig = tbl[['p.value']] < 0.05
       if (is.na(sig) || !sig) {
-        sprintf('% 05.2f ', tbl[['estimate']])
+        sprintf('% 05.3f ', tbl[['estimate']])
       } else {
-        sprintf('% 05.2f*', tbl[['estimate']])
+        sprintf('% 05.3f*', tbl[['estimate']])
       }
     }
   }
@@ -151,7 +151,7 @@ table_col <- function(mod) {
     if (nrow(tbl) == 0 || is.na(tbl[['std.error']])) {
       '' 
     } else {
-      sprintf('% 05.2f', tbl[['std.error']])
+      sprintf('% 05.3f', tbl[['std.error']])
     }
   }
   
@@ -235,14 +235,14 @@ subset <- unique(df$CHILDID)
 
 df %>%
   filter(CHILDID %in% subset) %>%
-  ggplot(aes(x=grade, y=XMSCALK4, group=CHILDID)) +
+  ggplot(aes(x=grade, y=XMTHETK5, group=CHILDID)) +
   geom_line(alpha=0.9995^(length(subset)))
 
 ```
 
 ```{r, fig.height=21, fig.width=6}
 df %>%
-  gather(var, val, XMSCALK4, XRSCALK4, MATL_F1, MENG_F2, MINHIB_F4, MATTEN_F3, XATTNFS_F3, XTCHAPP_F1, XINBCNT_F4) %>%
+  gather(var, val, XMSCALK5, XRSCALK5, MATL_F1, MENG_F2, MINHIB_F4, MATTEN_F3, XATTNFS_F3, XTCHAPP_F1, XINBCNT_F4) %>%
   ggplot(aes(val)) +
   geom_histogram() +
   facet_wrap(var~grade, scales='free_x', ncol=3)
