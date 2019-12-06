@@ -9,7 +9,7 @@ rule all:
 
 rule eclsk2011data:
   input:
-    'data/src/eclsk_2011_childk4.sav'
+    'data/src/eclsk2011k5/ECLSK2011_K5PUF.sav'
   output:
     'data/eclsk2011.rda'
   conda:

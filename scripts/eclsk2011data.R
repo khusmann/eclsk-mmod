@@ -1,9 +1,10 @@
 # http://supp.apa.org/psycarticles/supplemental/dev_43_6_1428/dev_43_6_1428_supp.html
 # https://nces.ed.gov/edat
 
-VARFILE <- 'data/cache/eclsk2011vars.rds'
-SUBSETFILE <- 'data/cache/eclsk_subset_2011.rds'
-RAWFILE <- 'data/src/eclsk_2011_childk4.sav'
+VARFILE <- 'data/cache/eclsk2011_vars.rds'
+SUBSETFILE <- 'data/cache/eclsk2011_subset.rds'
+RAWFILE <- 'data/src/eclsk2011k5/ECLSK2011_K5PUF.sav'
+#RAWFILE <- 'data/src/eclsk2011k4/ECLSK2011_K4PUF.sav'
 
 options(tidyverse.quiet = T)
 library(tidyverse)
@@ -11,7 +12,7 @@ library(labelled)
 
 eclsk2011 <- list()
 
-eclsk2011$ALL_OCCASIONS <- list(1:8)
+eclsk2011$ALL_OCCASIONS <- list(1:9)
 
 eclsk2011$expandMeasure <- function(measure, occasions) {
   # 'TKEEPS', c(1, 2) -> T1KEEPS, T2KEEPS
@@ -35,7 +36,7 @@ eclsk2011$measures <- list(
       'XINTMCQ', 'TBSPTLD', 'TBLKARO', 'TBSPQIK', 'TBEZWAT',
       'TBEZDAC', 'TBEZDSL', 'TBFLWIN',
       'XATTMCQ', 'TBHTATN', 'TBHTTLK', 'TBPYATN', 'TBDSATN', 'TBPLANS', 'TBHTSLW'
-    ), occasions = list(c(6,7,8)), na_vals = list(c(-9, 6)), use_label = F
+    ), occasions = list(c(6,7,8,9)), na_vals = list(c(-9, 6)), use_label = F
   ),
   tibble(measure = c( # CBQ
       'XATTNFS', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBABSBK',
@@ -48,7 +49,9 @@ eclsk2011$measures <- list(
     ), occasions = eclsk2011$ALL_OCCASIONS, na_vals = list(c(-9, -1)), use_label = F
   ),   
   tibble(measure = c( # Reading / math scores
-      'XRSCALK4', 'XMSCALK4'
+      'XRSCALK5', 'XMSCALK5',
+      'XRTHETK5', 'XMTHETK5',
+      'XRSETHK5', 'XMSETHK5'
     ), occasions = eclsk2011$ALL_OCCASIONS, na_vals = list(-9), use_label = F
   ),
   tibble(measure = 'X_RACETHP_R', na_vals = list(-9), use_label = T),
@@ -81,7 +84,8 @@ if (!file.exists(SUBSETFILE)) {
   } 
 
   df <- read_spss(RAWFILE) %>%
-        rename_at(vars(starts_with('G8')), ~str_replace(., 'G8', 'T8'))
+        rename_at(vars(starts_with('G8')), ~str_replace(., 'G8', 'T8')) %>%
+        rename_at(vars(starts_with('G9')), ~str_replace(., 'G9', 'T9'))
 
   write_rds(colnames(df), VARFILE)
 
