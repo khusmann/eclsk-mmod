@@ -14,11 +14,11 @@ make_mmod <- function(data, subset, split, measures, name, fiml, outdir) {
     source('scripts/mxMmodModel.R')
     load(paste0('data/', data, '.rda'))
     get(data)[[subset]] %>%
-    filter(split == !!split) %>%
-    mxMmodModel(name, idvar='CHILDID', timevar='grade', measures, fiml) %>%
-    mxOption('Checkpoint Directory', outdir) %>%
-    mxOption('Checkpoint Prefix', paste0(name, '_')) %>%
-    mxRestore(chkpt.directory=outdir, chkpt.prefix=paste0(name, '_'))
+      filter(split == !!split) %>%
+      mxMmodModel(name, idvar='CHILDID', timevar='grade', measures, fiml) %>%
+      mxOption('Checkpoint Directory', outdir) %>%
+      mxOption('Checkpoint Prefix', paste0(name, '_')) %>%
+      mxRestore(chkpt.directory=outdir, chkpt.prefix=paste0(name, '_'))
   })
 }
 
@@ -33,5 +33,11 @@ make_mmod(data=snakemake@params[['data']],
   rlang::eval_tidy() %>%
   mxOption(key='Number of Threads', value=snakemake@threads) %>%
   mxRun(checkpoint = T) %>%
-  summary() %>%
+  {
+    if (snakemake@config[['FIML']]) {
+      summary(., refModels=mxRefModels(., run = T))
+    } else {
+      summary(.)
+    }
+  } %>%
   write_rds(snakemake@output[[1]])
