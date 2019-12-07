@@ -168,14 +168,12 @@ table_col <- function(mod) {
     `Inhibitory Control` = '.*F4',
     `Attentional Focusing (2)` = '.*F5',
     `sd(Intercept)` = 'sd__\\(Intercept\\)',
-    `cor(Intercept, grade)` = 'cor__\\(Intercept\\).grade',
-    `sd(grade)` = 'sd__grade',
     `sd(resid)` = 'sd__Observation'
   )
   
   mappings_glnc <- c(
     `LL` = 'logLik',
-    `df.residual` = 'df.residual',
+    `df` = 'df.residual',
     `AIC` = 'AIC',
     `BIC` = 'BIC'
   )
@@ -214,7 +212,7 @@ models %>%
                    )  %>%
   add_header_above(c(' ' = 1, 'Reading' = 8, 'Math' = 8)) %>%
   group_rows(index=c('Fixed Effects' = 7,
-                     'Random Effects' = 4,
+                     'Random Effects' = 2,
                      'Model Fit' = 4))
  
 ```
