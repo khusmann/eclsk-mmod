@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(lmerTest)
 library(broom.mixed)
+library(corrr)
 library(kableExtra)
 
 
@@ -138,9 +139,9 @@ table_col <- function(mod) {
     } else {
       sig = tbl[['p.value']] < 0.05
       if (is.na(sig) || !sig) {
-        sprintf('% 05.3f ', tbl[['estimate']])
+        sprintf('% 06.3f ', tbl[['estimate']])
       } else {
-        sprintf('% 05.3f*', tbl[['estimate']])
+        sprintf('% 06.3f*', tbl[['estimate']])
       }
     }
   }
@@ -160,13 +161,12 @@ table_col <- function(mod) {
   }
   
   mappings <- c(
-    `(Intercept)` = '^\\(Intercept\\)',
-    `Grade` = '^grade',
     `Approaches to Learning` = '.*F1',
     `Engagement` = '.*F2',
     `Attentional Focusing` = '.*F3',
     `Inhibitory Control` = '.*F4',
-    `Attentional Focusing (2)` = '.*F5',
+    `(Intercept)` = '^\\(Intercept\\)',
+    `Grade` = '^grade',      
     `sd(Intercept)` = 'sd__\\(Intercept\\)',
     `sd(resid)` = 'sd__Observation'
   )
@@ -193,6 +193,7 @@ table_col <- function(mod) {
 
 }
 models %>%
+  filter(struct %in% c('theory', 'f4')) %>%
   mutate(tbl_c = map(model, table_col)) %>%
   select(id, tbl_c) %>%
   unnest(tbl_c) %>%
@@ -201,20 +202,45 @@ models %>%
   select(-var) %>%
   pivot_wider(names_from=id, values_from=val) %>%
 #  mutate_all(cell_spec, monospace=T) %>%
-  set_names(c(' ', rep(c('Estimate', 'SE'), 8))) %>%
+  set_names(c(' ', rep(c('Estimate', 'SE'), 4))) %>%
   kable(booktabs=T, align=c('l', 'c'), escape=F) %>%
   kable_styling(latex_options = c('scale_down')) %>%
   add_header_above(c(' ' = 1,
-                     rep(c('Theory' = 2,
-                           '3 Factor' = 2,
-                           '4 Factor' = 2,
-                           '5 Factor' = 2), 2))
+                     rep(c('Theory 3 Factor' = 2,
+                           'MMOD 4 Factor' = 2), 2))
                    )  %>%
-  add_header_above(c(' ' = 1, 'Reading' = 8, 'Math' = 8)) %>%
-  group_rows(index=c('Fixed Effects' = 7,
+  add_header_above(c(' ' = 1, 'Reading Theta Score' = 4, 'Math Theta Score' = 4)) %>%
+  group_rows(index=c('Factor Fixed Effects' = 4,
+                     'Other Fixed Effects' = 2,
                      'Random Effects' = 2,
                      'Model Fit' = 4))
  
+```
+```{r}
+df %>%
+  select(`Approaches to Learning` = XTCHAPP_F1,
+         `Attentional Focusing` = XATTNFS_F3,
+         `Inhibitory Control` = XINBCNT_F4) %>% 
+  correlate(diagonal=1) %>%
+  shave() %>%
+  mutate_at(vars(-rowname), ~if_else(is.na(.), '', sprintf('%0.3f', .))) %>%
+  rename(` ` = rowname) %>%
+  kable(booktabs=T, align=c('l', 'c'), escape=F) %>%
+  kable_styling(latex_options = c('scale_down'))
+```
+
+```{r}
+df %>%
+  select(`Approaches to Learning` = MATL_F1,
+         `Engagement` = MENG_F2,
+         `Attentional Focusing` = MATTEN_F3,
+         `Inhibitory Control` = MINHIB_F4) %>%
+  correlate(diagonal=1) %>%
+  shave() %>%
+  mutate_at(vars(-rowname), ~if_else(is.na(.), '', sprintf('%0.3f', .))) %>%
+  rename(` ` = rowname) %>%
+  kable(booktabs=T, align=c('l', 'c'), escape=F) %>%
+  kable_styling(latex_options = c('scale_down'))
 ```
 
 ```{r}
