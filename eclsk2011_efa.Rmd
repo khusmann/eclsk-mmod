@@ -59,7 +59,7 @@ study1_fa <- expand_grid(nfactors = c(2,3,4,5),
              mutate(fa_result = pmap(., do_explore, study1_data))
 
 pwalk(study1_fa, function(occasion, nfactors, fa_result) {
-  fa.diagram(fa_result, main=paste0('Occasion: ', occasion, ', nF: ', nfactors))
+  fa.diagram(fa_result, main=paste0('Occasion: ', occasion, ', nF: ', nfactors), cut=0.2)
 })
 ```
 
