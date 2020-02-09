@@ -5,8 +5,8 @@ library(corrr)
 data(eclsk2011)
 
 generate_all_tables <- function() {
-  Sys.glob('paper/tables/*.R') %>%
-    setdiff('paper/tables/common.R') %>%
+  Sys.glob('paper/scripts/*.R') %>%
+    setdiff('paper/scripts/common.R') %>%
     map(source) %>%
     invisible()
 }
