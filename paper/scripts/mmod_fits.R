@@ -1,4 +1,4 @@
-source('paper/tables/common.R')
+source('paper/scripts/common.R')
 
 mmod_results <- function(studyname) {
   mmod_results <- Sys.glob(paste0('data/res/', studyname, '/*_result.rds')) %>%

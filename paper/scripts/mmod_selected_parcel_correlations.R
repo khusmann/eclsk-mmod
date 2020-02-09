@@ -1,4 +1,4 @@
-source('paper/tables/common.R')
+source('paper/scripts/common.R')
 
 df_val_parcel %>%
   select(`Approaches to Learning` = MATL_F1,

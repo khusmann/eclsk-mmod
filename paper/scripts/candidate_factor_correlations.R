@@ -1,4 +1,4 @@
-source('paper/tables/common.R')
+source('paper/scripts/common.R')
 
 make_correlations_table <- function(occasion, nfactors, caption) {
   flist <- paste0('F', 1:nfactors)
