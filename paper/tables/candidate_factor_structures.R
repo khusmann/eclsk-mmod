@@ -1,36 +1,11 @@
 source('paper/tables/common.R')
 
-library(psych)
-
-filter_occasion <- function(data, o) {
-  data %>%
-    filter(occasion == o) %>%
-    select(-occasion) %>%
-    na.omit()
-}
-
-do_explore <- function(data, occasion, nfactors) {
-  data %>%
-    filter_occasion(occasion) %>%
-    fa(nfactors, rotate='promax')
-}
-
-study1_measures <- c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN',
-                     'TBEZDAC', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBEZDSL', 'TBABSBK',
-                     'TBWTTSK', 'TBTRBST', 'TBFLWIN', 'TBSTNO') # Omit: 'TBPLNAC', 'TBAPRRK'
-
-study1_data <- eclsk2011$study1 %>%
-  filter(split == 'train') %>%
-  select(c('occasion', study1_measures))
-
-study1_occasions <- c(1,2,4)
-study1_nfactors <- c(2,3,4,5)
+nfactor_range <- c(2,3,4,5)
 
 make_loadings_table <- function(occasion, caption) {
-  map(study1_nfactors, function(nfactors) {
-    study1_data %>%
-      filter_occasion(occasion) %>%
-      fa(nfactors, rotate='promax') %>%
+  map(nfactor_range, function(nfactors) {
+    df_train_measures %>%
+      do_explore(occasion, nfactors) %>%
       loadings() %>%
       {data.frame(matrix(as.numeric(.), attributes(.)$dim, dimnames=attributes(.)$dimnames))} %>%
       rownames_to_column('item') %>%
@@ -45,7 +20,7 @@ make_loadings_table <- function(occasion, caption) {
   bind_cols() %>%
   add_column(study1_measures, .before=0) %>%
   kable('latex', caption=caption,
-        col.names = c('', unlist(map(study1_nfactors, ~paste0('F', 1:.)))),
+        col.names = c('', unlist(map(nfactor_range, ~paste0('F', 1:.)))),
         booktabs=T, escape=F, label=paste0('candidate_factor_structures', occasion)) %>%
   kable_styling(latex_options=c('scale_down')) %>%
   add_header_above(c(' ' = 1,

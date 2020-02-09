@@ -1,5 +1,6 @@
 library(tidyverse)
 library(kableExtra)
+library(corrr)
 
 data(eclsk2011)
 
@@ -23,6 +24,30 @@ save_latex_table <- function(latex_table, name) {
     viewer(preview_file)  
   }  
 }
+
+# Create subset for candidate factor structures
+
+filter_occasion <- function(data, o) {
+  data %>%
+    filter(occasion == o) %>%
+    select(-occasion) %>%
+    na.omit()
+}
+
+do_explore <- function(data, occasion, nfactors) {
+  require(psych)
+  data %>%
+    filter_occasion(occasion) %>%
+    fa(nfactors, rotate='promax')
+}
+
+study1_measures <- c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN',
+                     'TBEZDAC', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBEZDSL', 'TBABSBK',
+                     'TBWTTSK', 'TBTRBST', 'TBFLWIN', 'TBSTNO') # Omit: 'TBPLNAC', 'TBAPRRK'
+
+df_train_measures <- eclsk2011$study1 %>%
+  filter(split == 'train') %>%
+  select(c('occasion', study1_measures))
 
 # Create parcel scores on validation set
 
