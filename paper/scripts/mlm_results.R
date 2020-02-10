@@ -74,9 +74,9 @@ table_col <- function(mod) {
   
   mappings <- c(
     `Approaches to Learning` = '.*F1',
-    `Engagement` = '.*F2',
     `Attentional Focusing` = '.*F3',
     `Inhibitory Control` = '.*F4',
+    `Behavioral Engagement` = '.*F2',
     `(Intercept)` = '^\\(Intercept\\)',
     `Grade` = '^grade',      
     `sd(Intercept)` = 'sd__\\(Intercept\\)',
@@ -105,7 +105,7 @@ table_col <- function(mod) {
   
 }
 
-latex_table <- models %>%
+models %>%
   mutate(tbl_c = map(model, table_col)) %>%
   select(id, tbl_c) %>%
   unnest(tbl_c) %>%

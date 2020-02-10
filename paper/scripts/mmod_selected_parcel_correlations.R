@@ -2,9 +2,9 @@ source('paper/scripts/common.R')
 
 df_val_parcel %>%
   select(`Approaches to Learning` = MATL_F1,
-         `Engagement` = MENG_F2,
          `Attentional Focusing` = MATTEN_F3,
-         `Inhibitory Control` = MINHIB_F4) %>%
+         `Inhibitory Control` = MINHIB_F4,
+         `Behavioral Engagement` = MENG_F2) %>%
   correlate(diagonal=1) %>%
   shave() %>%
   mutate_at(vars(-rowname), ~if_else(is.na(.), '', sprintf('%0.3f', .))) %>%
