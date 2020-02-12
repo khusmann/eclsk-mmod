@@ -8,7 +8,7 @@ occasion_list <- c(
   `Spring of 1st Grade` = 4
 )
 
-make_loadings_table <- function(nfactors) {
+make_loadings_table <- function(nfactors, foot = NULL) {
   map(occasion_list, function(occasion) {
       study1_explore(occasion, nfactors) %>%
       loadings() %>%
@@ -16,8 +16,8 @@ make_loadings_table <- function(nfactors) {
       rownames_to_column('item') %>%
       pivot_longer(-item, names_to = 'name', values_to = 'value') %>%
       group_by(item) %>%
-      mutate(value = cell_spec(sprintf('%0.3f', value), 'latex',
-                               bold = (near(abs(value), max(abs(value)))))) %>%
+      mutate(value = cell_spec(sprintf('%0.3f', value),
+                               'latex', bold = (near(abs(value), max(abs(value)))))) %>%
       ungroup() %>%
       pivot_wider(id_cols='item', names_from='name', values_from='value') %>%
       select(-item)
@@ -34,10 +34,13 @@ make_loadings_table <- function(nfactors) {
   column_spec(2+nfactors+seq_len(nfactors), background='gray!30') %>%
   add_header_above(c(' ' = 2, map_dbl(occasion_list, ~nfactors))) %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle") %>%
+  { if (!is.null(foot)) footnote(., general = foot, threeparttable = T) else . } %>%
   save_latex_table(paste0('candidate_factor_structures', nfactors))
 }
 
-make_loadings_table(2)
-make_loadings_table(3)
-make_loadings_table(4)
-make_loadings_table(5)
+footer <- 'Items in bold are the factor loadings with the highest absolute value across factors and included in the factor parcel.'
+
+make_loadings_table(2, footer)
+make_loadings_table(3, footer)
+make_loadings_table(4, footer)
+make_loadings_table(5, footer)

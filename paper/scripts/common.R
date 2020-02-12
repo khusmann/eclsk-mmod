@@ -34,6 +34,12 @@ df_train_measures <- eclsk2011$study1 %>%
   filter(split == 'train') %>%
   select(c('occasion', study1_measures))
 
+onames <- c(
+  `1` = 'Fall of Kindergarten',
+  `2` = 'Spring of Kindergarten',
+  `4` = 'Spring of 1st Grade'
+)
+
 fnames <- list(
   `2` = c('ATL+AF+IC', 'BE'),
   `3` = c('ATL', 'AF+IC', 'BE'),
@@ -50,7 +56,7 @@ fsort_order <- list(
   `3` = list(
     `1` = c(2,1,3),
     `2` = c(2,1,3),
-    `4` = c(2,1,3)
+    `4` = c(1,2,3)
   ),
   `4` = list(
     `1` = c(1,2,3,4),
