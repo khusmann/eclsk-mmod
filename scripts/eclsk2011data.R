@@ -142,15 +142,6 @@ eclsk2011$subset_tall <- eclsk2011$measures %>%
                            occasion == 7 ~ 3.5,
                            occasion == 8 ~ 4.5))
 
-eclsk2011$validation_split_old <- function(df, id) {
-  id_vals <- unique(df[id])
-  
-  train <- id_vals %>% sample_frac(0.5) %>% add_column(split = 'train')
-  test <- id_vals %>% anti_join(train, by=id) %>% add_column(split = 'test')
-  
-  bind_rows(train, test)
-}
-
 eclsk2011$validation_split <- function(df, id) {
   spec = c(train = 0.25, test = 0.25, val = 0.5)
   
