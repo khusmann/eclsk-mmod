@@ -53,6 +53,6 @@ study1_fits %>%
         label='mmod_fits', booktabs=T, escape=F) %>%
   kable_styling(latex_options = c('scale_down')) %>%
   collapse_rows(1:7) %>%
-  footnote(general='The MMOD-selected factor structure was the 4-Factor Structure found in both the Fall and Spring of Kindergarten measurement occasions (fit statistics in bold)',
+  footnote(general='According to the MMOD, the best-fitting factor structure was the 4-factor structure found in both the Fall and Spring of Kindergarten measurement occasions (fit statistics in bold)',
            threeparttable=T) %>%
   save_latex_table('mmod_fits')
