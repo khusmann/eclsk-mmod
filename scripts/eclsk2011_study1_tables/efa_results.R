@@ -1,4 +1,4 @@
-source('paper/scripts/common.R')
+source('scripts/eclsk2011_study1_tables/common.R')
 
 nfactor_range <- c(2,3,4,5)
 

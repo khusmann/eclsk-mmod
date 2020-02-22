@@ -1,4 +1,4 @@
-source('paper/scripts/common.R')
+source('scripts/eclsk2011_study1_tables/common.R')
 
 library(lmerTest)
 library(broom.mixed)

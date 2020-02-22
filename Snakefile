@@ -4,7 +4,26 @@ localrules: all, eclsk2011data
 
 rule all:
   input:
-    expand('data/res/eclsk2011_study1/{model}_result.rds', model=config['studies']['eclsk2011_study1']['models']),
+     'data/res/eclsk2011_study1.html'
+
+rule eclsk2011_study1:
+   input:
+     expand('data/res/eclsk2011_study1/{model}_result.rds', model=config['studies']['eclsk2011_study1']['models']),
+   output:
+     'data/res/eclsk2011_study1.html'
+   conda:
+     'envs/eclsk-analysis.yml'
+   script:
+     'eclsk2011_study1.Rmd'
+
+rule eclsk2011_study1_tables:
+   input:
+   output:
+     'data/res/eclsk2011_study1/tables'
+   conda:
+     'envs/eclsk-analysis.yml'
+   script:
+     'scripts/eclsk2011_study1_tables.R'
 
 rule eclsk2011data:
   input:
