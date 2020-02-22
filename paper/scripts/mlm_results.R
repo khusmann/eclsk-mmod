@@ -6,7 +6,7 @@ library(corrr)
 
 ###################### Create parcel scores on validation set
 
-df_val_parcel <- eclsk2011$study1 %>%
+df_val <- eclsk2011$study1 %>%
   filter(split == 'val') %>%
   filter_at(vars(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS, TATTEN,
                  TBGCCLR, TBGCBLD, TBABSBK, TBEZDSL, TBTRBST, TBEZDAC, TBNOFIN,
@@ -41,25 +41,25 @@ df_val_parcel <- eclsk2011$study1 %>%
 
 # Verify that our manually created parcels scores for the theoretical structure match
 # those created by the ECLS-K:2011
-stopifnot(all(near(df_val_parcel$XTCHAPP_F1, df_val_parcel$XTCHAPP, .01)))
-stopifnot(all(near(df_val_parcel$XATTNFS_F3, df_val_parcel$XATTNFS, .01)))
-stopifnot(all(near(df_val_parcel$XINBCNT_F4, df_val_parcel$XINBCNT, .01)))
+stopifnot(all(near(df_val$XTCHAPP_F1, df_val$XTCHAPP, .01)))
+stopifnot(all(near(df_val$XATTNFS_F3, df_val$XATTNFS, .01)))
+stopifnot(all(near(df_val$XINBCNT_F4, df_val$XINBCNT, .01)))
 
 ############### Define Models
 
 models_read <- list(
-  theory = lmer(XRTHETK5 ~ grade + XATTNFS_F3 + XTCHAPP_F1 + XINBCNT_F4 + (1|CHILDID), df_val_parcel,
+  theory = lmer(XRTHETK5 ~ grade + XATTNFS_F3 + XTCHAPP_F1 + XINBCNT_F4 + (1|CHILDID), df_val,
                 REML=F, control=lmerControl(optimizer='bobyqa')),
   
-  f4 = lmer(XRTHETK5 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MATTEN_F3 + (1|CHILDID), df_val_parcel,
+  f4 = lmer(XRTHETK5 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MATTEN_F3 + (1|CHILDID), df_val,
             REML=F, control=lmerControl(optimizer='bobyqa'))
 )
 
 models_math <- list(
-  theory = lmer(XMTHETK5 ~ grade + XATTNFS_F3 + XTCHAPP_F1 + XINBCNT_F4 + (1|CHILDID), df_val_parcel,
+  theory = lmer(XMTHETK5 ~ grade + XATTNFS_F3 + XTCHAPP_F1 + XINBCNT_F4 + (1|CHILDID), df_val,
                 REML=F, control=lmerControl(optimizer='bobyqa')),
   
-  f4 = lmer(XMTHETK5 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MATTEN_F3 + (1|CHILDID), df_val_parcel,
+  f4 = lmer(XMTHETK5 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MATTEN_F3 + (1|CHILDID), df_val,
             REML=F, control=lmerControl(optimizer='bobyqa'))
   
 )

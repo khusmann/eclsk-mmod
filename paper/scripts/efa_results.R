@@ -28,7 +28,11 @@ filter_occasion <- function(data, o) {
     na.omit()
 }
 
-study1_explore <- function(occasion, nfactors) {
+efa_measures <- c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN',
+                  'TBEZDAC', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBEZDSL', 'TBABSBK',
+                  'TBWTTSK', 'TBTRBST', 'TBFLWIN', 'TBSTNO') # Omit: 'TBPLNAC', 'TBAPRRK'
+
+do_explore <- function(occasion, nfactors) {
   require(psych)
   fsort_order <- list(
     `2` = list(
@@ -76,13 +80,10 @@ study1_explore <- function(occasion, nfactors) {
     )   
   )
   
-  measures <- c('TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN',
-                'TBEZDAC', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBEZDSL', 'TBABSBK',
-                'TBWTTSK', 'TBTRBST', 'TBFLWIN', 'TBSTNO') # Omit: 'TBPLNAC', 'TBAPRRK'
 
   eclsk2011$study1 %>%
     filter(split == 'train') %>%
-    select(c('occasion', measures)) %>%
+    select(c('occasion', efa_measures)) %>%
     filter_occasion(occasion) %>%
     fa(nfactors, rotate='promax') %>%
     `$<-`('score.cor', matrix(nrow=nfactors,ncol=nfactors)) %>% # TODO: this is a workaround for a fa.organize bug
@@ -92,7 +93,7 @@ study1_explore <- function(occasion, nfactors) {
 
 make_loadings_table <- function(nfactors, foot = NULL) {
   map(occasion_list, function(occasion) {
-      study1_explore(occasion, nfactors) %>%
+      do_explore(occasion, nfactors) %>%
       loadings() %>%
       {data.frame(matrix(as.numeric(.), attributes(.)$dim, dimnames=attributes(.)$dimnames))} %>%
       rownames_to_column('item') %>%
@@ -105,7 +106,7 @@ make_loadings_table <- function(nfactors, foot = NULL) {
       select(-item)
   }) %>%
   bind_cols() %>%
-  add_column(study1_measures, .before=0) %>%
+  add_column(efa_measures, .before=0) %>%
   add_column(c(rep('ATL', 7), rep('AF', 6), rep('IC', 4)), .before=0) %>%
   kable('latex', caption=paste0(nfactors, '-Factor Candidate Structures'),
         col.names = c('Theoretical scale','Measure',
@@ -125,7 +126,7 @@ make_correlations_table <- function(occasion, nfactors) {
                     onames[[as.character(occasion)]])
   flist <- fnames[[as.character(nfactors)]]
   tname <- paste0('candidate_factor_correlations', occasion, nfactors)
-  study1_explore(occasion, nfactors) %>%
+  do_explore(occasion, nfactors) %>%
     `[[`('Phi') %>%
     `dimnames<-`(list(flist, flist)) %>%
     as_cordf(diagonal=1) %>%
