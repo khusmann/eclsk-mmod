@@ -129,6 +129,9 @@ df_val_parcel <- eclsk2011$study1 %>%
     XINBCNT_F4 = rowMeans(cbind(8-TBTRBST, TBSTNO, TBWTTSK,
                                       TBFLWIN, TBPLNAC, TBAPRRK), na.rm=T)
   ) %>%
+  group_by(CHILDID) %>%
+  filter(n()==3) %>% # Data present at all occasions
+  ungroup() %>%  
   mutate_at( # Standardize all scales (mean=0, sd=1)
     vars(
       MATL_F1, MENG_F2, MATTEN_F3, MINHIB_F4,
