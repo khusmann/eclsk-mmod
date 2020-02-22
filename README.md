@@ -1,4 +1,4 @@
-# eclsk-analysis
+# eclsk-mmod
 
 Launch locally: snakemake --profile profiles/local
 
