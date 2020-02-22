@@ -114,7 +114,6 @@ df_val_parcel <- eclsk2011$study1 %>%
                  TBSTNO, TBWTTSK, TFOLLOW, TBFLWIN), all_vars(!is.na(.))) %>% # Exclude NAs
   mutate(
     TFOLLOW_sc = TFOLLOW/4*7, # Scaled version of TFOLLOW to use with MINHIB_F4
-#    TFOLLOW_sc = TFOLLOW, # Use raw score of TFOLLOW instead of scaling to match other vals
   ) %>%
   mutate( # Compute parcel scores for MMOD-chosen factor structure
     MATL_F1 = rowMeans(cbind(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS, TATTEN), na.rm=T),
