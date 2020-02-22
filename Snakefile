@@ -4,7 +4,8 @@ localrules: all, eclsk2011data
 
 rule all:
   input:
-     'data/res/eclsk2011_study1.html'
+     'data/res/eclsk2011_study1.html',
+     'data/res/eclsk2011_study1/tables'
 
 rule eclsk2011_study1:
    input:
@@ -18,6 +19,7 @@ rule eclsk2011_study1:
 
 rule eclsk2011_study1_tables:
    input:
+      rules.eclsk2011_study1.output
    output:
      'data/res/eclsk2011_study1/tables'
    conda:
