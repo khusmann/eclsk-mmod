@@ -4,6 +4,47 @@ library(lmerTest)
 library(broom.mixed)
 library(corrr)
 
+###################### Create parcel scores on validation set
+
+df_val_parcel <- eclsk2011$study1 %>%
+  filter(split == 'val') %>%
+  filter_at(vars(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS, TATTEN,
+                 TBGCCLR, TBGCBLD, TBABSBK, TBEZDSL, TBTRBST, TBEZDAC, TBNOFIN,
+                 TBSTNO, TBWTTSK, TFOLLOW, TBFLWIN), all_vars(!is.na(.))) %>% # Exclude NAs
+  mutate(
+    TFOLLOW_sc = TFOLLOW/4*7, # Scaled version of TFOLLOW to use with MINHIB_F4
+  ) %>%
+  mutate( # Compute parcel scores for MMOD-chosen factor structure
+    MATL_F1 = rowMeans(cbind(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS, TATTEN), na.rm=T),
+    MENG_F2 = rowMeans(cbind(TBGCCLR, TBGCBLD, TBABSBK), na.rm=T),
+    MATTEN_F3 = rowMeans(cbind(8-TBEZDSL, 8-TBTRBST, 8-TBEZDAC, 8-TBNOFIN), na.rm=T),
+    MINHIB_F4 = rowMeans(cbind(TBSTNO, TBWTTSK, TFOLLOW_sc, TBFLWIN), na.rm=T)
+  ) %>%
+  mutate( # Compute parcel scores for theoretical structure
+    XTCHAPP_F1 = rowMeans(cbind(TWORKS, TPERSIS, TSHOWS, TADAPTS,
+                                      TKEEPS, TATTEN, TFOLLOW), na.rm=T),
+    XATTNFS_F3 = rowMeans(cbind(8-TBEZDAC, 8-TBNOFIN, 8-TBEZDSL,
+                                      TBGCBLD, TBGCCLR, TBABSBK), na.rm=T),
+    XINBCNT_F4 = rowMeans(cbind(8-TBTRBST, TBSTNO, TBWTTSK,
+                                      TBFLWIN, TBPLNAC, TBAPRRK), na.rm=T)
+  ) %>%
+  group_by(CHILDID) %>%
+  filter(n()==3) %>% # Data present at all occasions
+  ungroup() %>%
+  mutate_at( # Standardize all scales (mean=0, sd=1)
+    vars(
+      MATL_F1, MENG_F2, MATTEN_F3, MINHIB_F4,
+      XTCHAPP_F1, XATTNFS_F3, XINBCNT_F4,
+      XTCHAPP, XATTNFS, XINBCNT
+    ), scale
+  )
+
+# Verify that our manually created parcels scores for the theoretical structure match
+# those created by the ECLS-K:2011
+stopifnot(all(near(df_val_parcel$XTCHAPP_F1, df_val_parcel$XTCHAPP, .01)))
+stopifnot(all(near(df_val_parcel$XATTNFS_F3, df_val_parcel$XATTNFS, .01)))
+stopifnot(all(near(df_val_parcel$XINBCNT_F4, df_val_parcel$XINBCNT, .01)))
+
 ############### Define Models
 
 models_read <- list(
