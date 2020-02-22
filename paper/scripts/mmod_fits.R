@@ -1,12 +1,5 @@
 source('paper/scripts/common.R')
 
-mmod_results <- function(studyname) {
-  mmod_results <- Sys.glob(paste0('data/res/', studyname, '/*_result.rds')) %>%
-                  map(read_rds)
-  names(mmod_results) <- map(mmod_results, 'modelName')
-  mmod_results
-}
-
 mmod_fits <- function(mmod_results) {
   tibble(
     name=map_chr(mmod_results, 'modelName'),
@@ -22,10 +15,10 @@ mmod_fits <- function(mmod_results) {
   )
 }
 
-study1_results <- mmod_results('eclsk2011_study1')
-study1_fits <- mmod_fits(study1_results)
-
-study1_fits %>%
+Sys.glob('data/res/eclsk2011_study1/*_result.rds') %>%
+  map(read_rds) %>%
+  setNames(map(., 'modelName')) %>%
+  mmod_fits() %>%
   mutate(name = fct_relevel(name, 'theory', after=Inf)) %>%
   arrange(name) %>%
   extract(name, c('numFct', 'occ'), 'efa(.)occ(.+)') %>% 
@@ -36,7 +29,7 @@ study1_fits %>%
   mutate(occ = str_replace(occ, '2', 'Spring Kindergarten')) %>%
   mutate(occ = str_replace(occ, '4', 'Spring 1st Grade')) %>%
   mutate(numFct = replace_na(numFct, 3)) %>%
-  filter(numFct != '5') %>%
+  filter(between(as.numeric(numFct), 2, 4)) %>%
   mutate(numFct = str_c(numFct, '-Factor'),
          occ = replace_na(occ, 'Theory')) %>%
   mutate_at(vars(n:bic), ~sprintf('%0.0f', .)) %>%
