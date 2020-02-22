@@ -38,9 +38,46 @@ make_loadings_table <- function(nfactors, foot = NULL) {
   save_latex_table(paste0('candidate_factor_structures', nfactors))
 }
 
+make_correlations_table <- function(occasion, nfactors) {
+  caption <- paste0(nfactors, '-Factor Candidate Structure Intercorrelations: ',
+                    onames[[as.character(occasion)]])
+  flist <- fnames[[as.character(nfactors)]]
+  tname <- paste0('candidate_factor_correlations', occasion, nfactors)
+  study1_explore(occasion, nfactors) %>%
+    `[[`('Phi') %>%
+    `dimnames<-`(list(flist, flist)) %>%
+    as_cordf(diagonal=1) %>%
+    shave() %>%
+    mutate_at(vars(-rowname), ~if_else(is.na(.), '', sprintf('%0.3f', .))) %>%
+    rename(` ` = rowname) %>%
+    kable('latex', booktabs=T, caption=caption, escape=F, label=tname) %>%
+    kable_styling(latex_options = c()) %>%
+    save_latex_table(tname)
+}
+
+
 footer <- 'Items in bold are the factor loadings with the highest absolute value across factors and included in the factor parcel.'
 
+# 2-Factor Structures
 make_loadings_table(2, footer)
+make_correlations_table(1, 2)
+make_correlations_table(2, 2)
+make_correlations_table(4, 2)
+
+# 3-Factor Structures
 make_loadings_table(3, footer)
+make_correlations_table(1, 3)
+make_correlations_table(2, 3)
+make_correlations_table(4, 3)
+
+# 4-Factor Structures
 make_loadings_table(4, footer)
+make_correlations_table(1, 4)
+make_correlations_table(2, 4)
+make_correlations_table(4, 4)
+
+# 5-Factor Structures
 make_loadings_table(5, footer)
+ake_correlations_table(1, 5)
+make_correlations_table(2, 5)
+make_correlations_table(4, 5)
