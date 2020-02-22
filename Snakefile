@@ -5,6 +5,7 @@ localrules: all, eclsk2011data
 rule all:
   input:
     expand('data/res/eclsk2011_study1/{model}_result.rds', model=config['studies']['eclsk2011_study1']['models']),
+    expand('data/res/eclsk2011_study2/{model}_result.rds', model=config['studies']['eclsk2011_study2']['models']),
 
 rule eclsk2011data:
   input:

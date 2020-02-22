@@ -4,6 +4,7 @@
 VARFILE <- 'data/cache/eclsk2011_vars.rds'
 SUBSETFILE <- 'data/cache/eclsk2011_subset.rds'
 RAWFILE <- 'data/src/eclsk2011k5/ECLSK2011_K5PUF.sav'
+#RAWFILE <- 'data/src/eclsk2011k4/ECLSK2011_K4PUF.sav'
 
 options(tidyverse.quiet = T)
 library(tidyverse)
@@ -27,12 +28,26 @@ eclsk2011$measures <- list(
       'XTCHAPP', 'TKEEPS', 'TSHOWS', 'TWORKS', 'TADAPTS', 'TFOLLOW', 'TPERSIS', 'TATTEN'
     ), occasions = eclsk2011$ALL_OCCASIONS, na_vals = list(c(-9, 5)), use_label = F
   ),
+  tibble(measure = c( # Parent-rated ATL
+      'PWRKFIN', 'PSHWINT', 'PCONCEN', 'PCHORES', 'PLEARN', 'PCREATV'
+    ), occasions = list(c(1,2,4)), na_vals = list(c(-9, -8, -7, 5)), use_label = F
+  ),
+  tibble(measure = c( # TMCQ
+      'XINTMCQ', 'TBSPTLD', 'TBLKARO', 'TBSPQIK', 'TBEZWAT',
+      'TBEZDAC', 'TBEZDSL', 'TBFLWIN',
+      'XATTMCQ', 'TBHTATN', 'TBHTTLK', 'TBPYATN', 'TBDSATN', 'TBPLANS', 'TBHTSLW'
+    ), occasions = list(c(6,7,8,9)), na_vals = list(c(-9, 6)), use_label = F
+  ),
   tibble(measure = c( # CBQ
       'XATTNFS', 'TBNOFIN', 'TBGCCLR', 'TBGCBLD', 'TBABSBK',
       'TBEZDAC', 'TBEZDSL', 'TBFLWIN',
       'XINBCNT', 'TBWTTSK', 'TBPLNAC', 'TBTRBST', 'TBAPRRK', 'TBSTNO'
     ), occasions = list(c(1,2,4)), na_vals = list(c(-9, 8)), use_label = F
   ),
+  tibble(measure = c( # EF Card Sort
+      'XNRSSCR'
+    ), occasions = eclsk2011$ALL_OCCASIONS, na_vals = list(c(-9, -1)), use_label = F
+  ),   
   tibble(measure = c( # Reading / math scores
       'XRSCALK5', 'XMSCALK5',
       'XRTHETK5', 'XMTHETK5',
@@ -146,6 +161,14 @@ set.seed(9001)
 
 eclsk2011$study1 <- eclsk2011$subset_tall %>%
                     filter(occasion %in% c(1,2,4)) %>%
+                    filter(X1FIRKDG == '1: YES') %>% # First time kindergartener
+                    group_by(CHILDID) %>%
+                    filter(n_distinct(S_ID) == 1) %>% # At same school all occasions
+                    ungroup() %>%
+                    full_join(eclsk2011$validation_split(., 'CHILDID'), by='CHILDID')
+
+eclsk2011$study2 <- eclsk2011$subset_tall %>%
+                    filter(occasion %in% c(6,7,8)) %>%
                     filter(X1FIRKDG == '1: YES') %>% # First time kindergartener
                     group_by(CHILDID) %>%
                     filter(n_distinct(S_ID) == 1) %>% # At same school all occasions
