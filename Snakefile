@@ -1,6 +1,6 @@
 configfile: 'config.yml'
 
-localrules: all, eclsk2011data
+localrules: all, eclsk2011data, eclsk2011_study1, eclsk2011_study1_tables
 
 rule all:
   input:
@@ -21,7 +21,7 @@ rule eclsk2011_study1_tables:
    input:
       rules.eclsk2011_study1.output
    output:
-     'data/res/eclsk2011_study1/tables'
+     directory('data/res/eclsk2011_study1/tables')
    conda:
      'envs/eclsk-analysis.yml'
    script:
