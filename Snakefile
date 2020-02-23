@@ -2,7 +2,7 @@ configfile: 'config.yml'
 
 localrules: all, eclsk2011data, eclsk2011_study1, eclsk2011_study1_tables
 
-MMOD_RESULTS = expand('data/res/eclsk2011_study1/mmod/{model}_result.rds', model=config['studies']['eclsk2011_study1']['models']),
+STUDY1_MMOD = expand('data/res/eclsk2011_study1/mmod/{model}_result.rds', model=config['studies']['eclsk2011_study1']['models']),
 
 rule all:
   input:
@@ -11,7 +11,7 @@ rule all:
 
 rule eclsk2011_study1:
    input:
-      MMOD_RESULTS,
+      STUDY1_MMOD,
    output:
      'data/res/eclsk2011_study1.html'
    conda:
@@ -21,7 +21,7 @@ rule eclsk2011_study1:
 
 rule eclsk2011_study1_tables:
    input:
-      MMOD_RESULTS,
+      STUDY1_MMOD,
    output:
      directory('data/res/eclsk2011_study1/tables')
    conda:
