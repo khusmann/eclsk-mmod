@@ -19,16 +19,13 @@ generate_all_tables <- function() {
 }
 
 save_latex_table <- function(latex_table, name) {
-  preview_file <- latex_table %>%
-    save_kable(tempfile(name, fileext='.pdf'))
-  
   latex_table %>%
     cat(file=file.path(OUTDIR, paste0(name, '.tex')))
   
   viewer <- getOption('viewer')
-  
   if (!is.null(viewer) && !exists('NO_PREVIEW')) {
-    print(preview_file)
+    preview_file <- latex_table %>%
+      save_kable(tempfile(name, fileext='.pdf'))
     viewer(preview_file)  
   }  
 }
