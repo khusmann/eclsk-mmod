@@ -15,7 +15,7 @@ mmod_fits <- function(mmod_results) {
   )
 }
 
-Sys.glob('data/res/eclsk2011_study1/*_result.rds') %>%
+Sys.glob('data/res/eclsk2011_study1/mmod/*_result.rds') %>%
   map(read_rds) %>%
   setNames(map(., 'modelName')) %>%
   mmod_fits() %>%
