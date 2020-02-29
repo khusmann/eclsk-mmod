@@ -1,3 +1,6 @@
+from snakemake.utils import min_version
+min_version("5.2")
+
 configfile: 'config.yml'
 
 localrules: all, eclsk2011data, eclsk2011_study1, eclsk2011_study1_tables
