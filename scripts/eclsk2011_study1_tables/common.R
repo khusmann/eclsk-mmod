@@ -4,7 +4,7 @@ library(corrr)
 
 data(eclsk2011)
 
-OUTDIR <- file.path('data', 'res', 'eclsk2011_study1', 'tables')
+OUTDIR <- file.path('data', 'eclsk2011_study1', 'tables')
 
 if (!dir.exists(OUTDIR)) {
    dir.create(OUTDIR, recursive=T)

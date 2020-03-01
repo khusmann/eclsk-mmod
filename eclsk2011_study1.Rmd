@@ -142,7 +142,7 @@ mmod_fits <- function(mmod_results) {
   )
 }
 
-mmod_result <- Sys.glob('data/res/eclsk2011_study1/mmod/*_result.rds') %>%
+mmod_result <- Sys.glob('data/cache/eclsk2011_study1/*_result.rds') %>%
                map(read_rds) %>%
                setNames(map(., 'modelName'))
 
@@ -152,7 +152,7 @@ mmod_fits(mmod_result)
 If you want to manually run / inspect the MMODs, use the following code:
 
 ```{r, eval=F}
-mmod_models <- Sys.glob('data/res/eclsk2011_study1/mmod/*_model.rds') %>%
+mmod_models <- Sys.glob('data/cache/eclsk2011_study1/*_model.rds') %>%
                map(read_rds) %>%
                map(rlang::eval_tidy) %>%
                setNames(map(., 'name'))
