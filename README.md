@@ -12,7 +12,7 @@ Follow the instructions at the [NCES Data Products page](https://nces.ed.gov/ecl
 
 ```
 mkdir -p data/src/eclsk2011k5
-mv ECLSK2011\_K5PUF.sav data/src/eclsk2011k5
+mv ECLSK2011_K5PUF.sav data/src/eclsk2011k5
 ```
 
 ## 3) Run pipeline
