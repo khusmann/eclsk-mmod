@@ -1,7 +1,7 @@
 ---
 title: "ECLSK:2011 Study1 Results"
 author: "Kyle Husmann"
-date: "February 21, 2020"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     toc: true
@@ -121,6 +121,7 @@ efa_result <- expand_grid(nfactors = c(2,3,4,5),
 
 pwalk(efa_result, function(occasion, nfactors, fa_result) {
   fa.diagram(fa_result, main=paste0('Occasion: ', occasion, ', nF: ', nfactors), cut=0.2)
+  print(fa_result)
 })
 ```
 
