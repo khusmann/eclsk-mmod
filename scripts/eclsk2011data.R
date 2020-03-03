@@ -150,6 +150,6 @@ eclsk2011$study1 <- eclsk2011$subset_tall %>%
                     group_by(CHILDID) %>%
                     filter(n_distinct(S_ID) == 1) %>% # At same school all occasions
                     ungroup() %>%
-                    full_join(eclsk2011$validation_split(., 'CHILDID'), by='CHILDID')
+                    full_join(eclsk2011$validation_split(., 'S_ID'), by='S_ID')
 
 save(eclsk2011, file = 'data/eclsk2011.rda')
