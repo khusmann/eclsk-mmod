@@ -3,7 +3,7 @@
 
 VARFILE <- 'data/cache/eclsk2011_vars.rds'
 SUBSETFILE <- 'data/cache/eclsk2011_subset.rds'
-RAWFILE <- 'data/src/eclsk2011k5/ECLSK2011_K5PUF.sav'
+RAWFILE <- 'data/src/eclsk2011k5/childK5p.rds'
 
 options(tidyverse.quiet = T)
 library(tidyverse)
@@ -52,7 +52,6 @@ eclsk2011$subset_vars <- map2(eclsk2011$measures$measure,
                          c('CHILDID')
 
 if (!file.exists(SUBSETFILE)) {
-  require(haven)
   warning(paste(SUBSETFILE, "doesn't exist, creating..."))
 
   dir.create(dirname(SUBSETFILE), showWarnings=F)
@@ -68,7 +67,7 @@ if (!file.exists(SUBSETFILE)) {
     }
   } 
 
-  df <- read_spss(RAWFILE) %>%
+  df <- read_rds(RAWFILE) %>%
         rename_at(vars(starts_with('G8')), ~str_replace(., 'G8', 'T8')) %>%
         rename_at(vars(starts_with('G9')), ~str_replace(., 'G9', 'T9'))
 
