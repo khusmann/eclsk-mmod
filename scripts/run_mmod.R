@@ -1,5 +1,6 @@
 options(tidyverse.quiet = T)
 library(tidyverse)
+library(OpenMx)
 
 make_mmod <- function(data, subset, split, measures, name, fiml, outdir) {
   force(data)
@@ -11,7 +12,8 @@ make_mmod <- function(data, subset, split, measures, name, fiml, outdir) {
   force(outdir)
   quo({
     require(tidyverse)
-    source('scripts/mxMmodModel.R')
+    require(OpenMx)
+    require(mxmmod)
     load(paste0('data/', data, '.rda'))
     get(data)[[subset]] %>%
       filter(split == !!split) %>%

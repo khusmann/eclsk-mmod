@@ -131,6 +131,7 @@ dependencies:
   - r-modelr=0.1.5=r35h6115d3f_0
   - r-munsell=0.5.0=r35h6115d3f_1002
   - r-mvtnorm=1.0_12=r35h9bbef5b_0
+  - r-mxmmod=1.0.1=r35h6115d3f_0
   - r-nlme=3.1_144=r35h9bbef5b_0
   - r-nloptr=1.2.1=r35h0357c0b_1
   - r-numderiv=2016.8_1.1=r35h6115d3f_1
