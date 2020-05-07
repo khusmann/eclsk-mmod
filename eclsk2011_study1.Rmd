@@ -1,6 +1,5 @@
 ---
 title: "ECLSK:2011 Study1 Results"
-author: "Kyle Husmann"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
