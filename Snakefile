@@ -14,6 +14,7 @@ configfile: 'config.yml'
 
 localrules: 
   all,
+  eclsk_datfile,
   eclsk2011_rdsfile,
   eclsk2011_datfile,
   eclsk2011_syntaxfile,
@@ -27,6 +28,24 @@ rule all:
   input:
     'data/eclsk2011_study1/eclsk2011_study1.html',
     'data/eclsk2011_study1/tables'
+
+rule eclsk_datfile:
+  input:
+    HTTP.remote(expand('nces.ed.gov/ecls/data/Childk8p.z{n}', n=['ip', *['0' + str(i) for i in range(1,6)]])),
+  output:
+    'data/src/eclsk8/childk8p.dat.fwf.gz'
+  conda:
+    'envs/eclsk-analysis.yml'
+  shell:
+    '''
+    echo "76bd5f6413c6c2597c301b83b1e7ac20  {input[1]}
+          12e0a4154bd231cf97f7da6b4eb53bbb  {input[2]}
+          3228d623b09b789408f96537d370e75d  {input[3]}
+          4c4fcb0b31bc74e0af04c5a749fc2b8c  {input[4]}
+          6a0dbc3dcf096eb2688694901e560333  {input[5]}
+          d503ba706fd9806af6508c6a47c80f7c  {input[0]}" | md5sum -c &&
+    7z e {input[0]} -so | awk \'BEGIN{{RS="\\r\\n"}} {{line=line $0}} NR%15==0{{print line; line=""}}\' | gzip > {output[0]}
+    '''
 
 rule eclsk2011_rdsfile:
   input:

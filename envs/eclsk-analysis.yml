@@ -9,7 +9,7 @@ dependencies:
   - binutils_linux-64=2.33.1=h9595d00_16
   - bwidget=1.9.14=0
   - bzip2=1.0.8=h516909a_2
-  - ca-certificates=2019.11.28=hecc5488_0
+  - ca-certificates=2020.4.5.2=hecda079_0
   - cairo=1.16.0=hfb77d84_1002
   - curl=7.68.0=hf8cf82a_0
   - fontconfig=2.13.1=h86ecdb6_1001
@@ -50,7 +50,8 @@ dependencies:
   - lz4-c=1.8.3=he1b5a44_1001
   - make=4.2.1=h14c3975_2004
   - ncurses=6.1=hf484d3e_1002
-  - openssl=1.1.1d=h516909a_0
+  - openssl=1.1.1g=h516909a_0
+  - p7zip=16.02=he1b5a44_1000
   - pandoc=2.9.2=0
   - pango=1.42.4=ha030887_1
   - pcre=8.44=he1b5a44_0
@@ -205,3 +206,5 @@ dependencies:
   - xz=5.2.4=h14c3975_1001
   - zlib=1.2.11=h516909a_1006
   - zstd=1.4.4=h3b9ef0a_1
+prefix: /storage/work/k/kdh38/eclsk-mmod/.snakemake/conda/3e4e0b13
+
