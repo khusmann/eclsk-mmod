@@ -7,14 +7,13 @@ from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 
 HTTP = HTTPRemoteProvider()
 
-def check_md5(f, md5sum):
-  assert hashlib.md5(open(f, 'rb').read()).hexdigest() == md5sum, 'MD5 check failure'
-  
 configfile: 'config.yml'
 
 localrules: 
   all,
+  eclsk_rdsfile,
   eclsk_datfile,
+  eclsk_syntaxfile,
   eclsk2011_rdsfile,
   eclsk2011_datfile,
   eclsk2011_syntaxfile,
@@ -27,7 +26,18 @@ STUDY1_MMOD = expand('data/cache/eclsk2011_study1/{model}_result.rds', model=con
 rule all:
   input:
     'data/eclsk2011_study1/eclsk2011_study1.html',
-    'data/eclsk2011_study1/tables'
+    'data/eclsk2011_study1/tables',
+
+rule eclsk_rdsfile:
+  input:
+    dat_file = 'data/src/eclsk8/childk8p.dat.fwf.gz',
+    sps_file = 'data/src/eclsk8/ECLSK_Kto8_child_SPSS.sps',
+  output:
+    'data/src/eclsk8/childk8p.rds'
+  conda:
+    'envs/eclsk-analysis.yml'
+  script:
+    'scripts/eclskraw2rds.R'
 
 rule eclsk_datfile:
   input:
@@ -47,34 +57,49 @@ rule eclsk_datfile:
     7z e {input[0]} -so | awk \'BEGIN{{RS="\\r\\n"}} {{line=line $0}} NR%15==0{{print line; line=""}}\' | gzip > {output[0]}
     '''
 
+rule eclsk_syntaxfile:
+  input:
+    HTTP.remote('nces.ed.gov/ecls/data/ECLSK_Kto8_child_SPSS.sps')
+  output:
+    'data/src/eclsk8/ECLSK_Kto8_child_SPSS.sps'
+  shell:
+    '''
+    echo "a586f4bd35099a4f92b6e9fb99818daf  {input[0]}" | md5sum -c &&
+    cp {input[0]} {output[0]}
+    '''
+
 rule eclsk2011_rdsfile:
   input:
-    'data/src/eclsk2011k5/childK5p.dat.fwf.gz',
-    'data/src/eclsk2011k5/ECLSK2011_K5PUF.sps'
+    dat_file = 'data/src/eclsk2011k5/childK5p.dat.fwf.gz',
+    sps_file = 'data/src/eclsk2011k5/ECLSK2011_K5PUF.sps',
   output:
     'data/src/eclsk2011k5/childK5p.rds'
   conda:
     'envs/eclsk-analysis.yml'
   script:
-    'scripts/eclsk2011raw2rds.R'
+    'scripts/eclskraw2rds.R'
 
 rule eclsk2011_datfile:
   input:
     HTTP.remote('nces.ed.gov/ecls/data/2019/ChildK5p.zip')
   output:
     'data/src/eclsk2011k5/childK5p.dat.fwf.gz'
-  run:
-    check_md5(input[0], 'd32a34614dab19a8dc1872b68d636e32')
-    shell('unzip -p {input[0]} childK5p.dat | awk \'BEGIN{{RS="\\r\\n"}} {{line=line $0}} NR%27==0{{print line; line=""}}\' | gzip > {output[0]}')
+  shell:
+    '''
+    echo "d32a34614dab19a8dc1872b68d636e32  {input[0]}" | md5sum -c &&
+    unzip -p {input[0]} childK5p.dat | awk \'BEGIN{{RS="\\r\\n"}} {{line=line $0}} NR%27==0{{print line; line=""}}\' | gzip > {output[0]}
+    '''
 
 rule eclsk2011_syntaxfile:
   input:
     HTTP.remote('nces.ed.gov/ecls/data/2019/ECLSK2011_K5PUF.sps')
   output:
     'data/src/eclsk2011k5/ECLSK2011_K5PUF.sps'
-  run:
-    check_md5(input[0], 'cef3909c6ec9ba504fa261c7b8a18d3f')
-    shell('cp {input[0]} {output[0]}')
+  shell:
+    '''
+    echo "cef3909c6ec9ba504fa261c7b8a18d3f  {input[0]}" | md5sum -c &&
+    cp {input[0]} {output[0]}
+    '''
 
 rule eclsk2011_study1:
    input:
