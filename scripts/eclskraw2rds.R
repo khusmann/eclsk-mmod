@@ -2,9 +2,10 @@ options(tidyverse.quiet = T)
 library(tidyverse)
 library(labelled)
 
-DAT_FILE <- snakemake@input[["dat_file"]]
-SPS_FILE <- snakemake@input[["sps_file"]]
+DAT_FILE <- snakemake@input$dat_file
+SPS_FILE <- snakemake@input$sps_file
 OUTPUT_FILE <- snakemake@output[[1]]
+EXTRA_FILES <- snakemake@input$extra
 
 #DAT_FILE <- 'data/src/eclsk8/childk8p.dat.fwf.gz'
 #SPS_FILE <- 'data/src/eclsk8/ECLSK_Kto8_child_SPSS.sps'
@@ -79,6 +80,18 @@ var_label(df) <- all_defs$label
 
 cat('-- Set value labels\n')
 val_labels(df) <- setNames(val_defs$val_dict, val_defs$cname)
+
+cat('-- Join extra items\n')
+walk(EXTRA_FILES, function(i) {
+  require(haven)
+  cat(paste('Join: ', i, '\n'))
+  extra <- read_spss(i)
+  overlap <- setdiff(intersect(names(df), names(extra)), 'CHILDID')
+  extra_new <- extra[setdiff(names(extra), overlap)]
+  attributes(extra_new$CHILDID) <- attributes(df$CHILDID)
+  df <<- full_join(df, extra_new, by='CHILDID')
+})
+
 
 cat('-- Writing file\n')
 write_rds(df, OUTPUT_FILE, compress='gz')

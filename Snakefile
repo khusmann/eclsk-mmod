@@ -14,6 +14,7 @@ localrules:
   eclsk_rdsfile,
   eclsk_datfile,
   eclsk_syntaxfile,
+  eclskdata,
   eclsk2011_rdsfile,
   eclsk2011_datfile,
   eclsk2011_syntaxfile,
@@ -32,6 +33,9 @@ rule eclsk_rdsfile:
   input:
     dat_file = 'data/src/eclsk8/childk8p.dat.fwf.gz',
     sps_file = 'data/src/eclsk8/ECLSK_Kto8_child_SPSS.sps',
+    extra = ['data/src/eclsk8/2010070_atl_spss.sav',
+             'data/src/eclsk8/2010070_sdq_spss.sav',
+             'data/src/eclsk8/eclsk_theta_errata.sav'],
   output:
     'data/src/eclsk8/childk8p.rds'
   conda:
@@ -57,15 +61,40 @@ rule eclsk_datfile:
     7z e {input[0]} -so | awk \'BEGIN{{RS="\\r\\n"}} {{line=line $0}} NR%15==0{{print line; line=""}}\' | gzip > {output[0]}
     '''
 
+rule eclskdata:
+  input:
+    'data/src/eclsk8/childk8p.rds'
+  output:
+    'data/eclsk.rda'
+  conda:
+    'envs/eclsk-analysis.yml'
+  log:
+    'data/cache/eclsk_subset.rds',
+    'data/cache/eclsk_vars.rds',
+  script:
+    'scripts/eclskdata.R'
+
 rule eclsk_syntaxfile:
   input:
-    HTTP.remote('nces.ed.gov/ecls/data/ECLSK_Kto8_child_SPSS.sps')
+    HTTP.remote('nces.ed.gov/ecls/data/ECLSK_Kto8_child_SPSS.sps'),
+    HTTP.remote('nces.ed.gov/pubs2010/data/2010070_atl_spss.zip'),
+    HTTP.remote('nces.ed.gov/pubs2010/data/2010070_sdq_spss.zip'),
+    HTTP.remote('nces.ed.gov/pubs2010/data/2010052_errata.zip'),
   output:
-    'data/src/eclsk8/ECLSK_Kto8_child_SPSS.sps'
+    'data/src/eclsk8/ECLSK_Kto8_child_SPSS.sps',
+    'data/src/eclsk8/2010070_atl_spss.sav',
+    'data/src/eclsk8/2010070_sdq_spss.sav',
+    'data/src/eclsk8/eclsk_theta_errata.sav',
   shell:
     '''
-    echo "a586f4bd35099a4f92b6e9fb99818daf  {input[0]}" | md5sum -c &&
+    echo "a586f4bd35099a4f92b6e9fb99818daf  {input[0]}
+          6870844c9e40e0a771bd1ccc2545e529  {input[1]}
+          f7e860a40e953174fe0a8186e7876dde  {input[2]}
+          c671517bcfc811429278e0a27e04c3db  {input[3]}" | md5sum -c &&
     cp {input[0]} {output[0]}
+    unzip -p {input[1]} 2010070_atl_spss.sav > {output[1]}
+    unzip -p {input[2]} ECLSK_SDQ.sav > {output[2]}
+    unzip -p {input[3]} eclsk_theta_errata.sav > {output[3]}
     '''
 
 rule eclsk2011_rdsfile:
