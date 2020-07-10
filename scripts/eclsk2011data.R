@@ -39,9 +39,24 @@ eclsk2011$measures <- list(
       'XRSETHK5', 'XMSETHK5'
     ), occasions = eclsk2011$ALL_OCCASIONS, na_vals = list(-9), use_label = F
   ),
+  tibble(measure = c( # Received tutoring (parent report)
+      'PTUTREG', 'PTUTREA', 'PTUTMTH'
+    ), occasions = list(c(4,6,7,8)), na_vals = list(c(-1, -2, -7, -8, -9)), use_label = T
+  ),
+  tibble(measure = c( # Tutoring
+      'TTTRRD'
+    ), occasions = list(c(2, 4, 6, 7, 8, 9)), na_vals = list(c(-9)), use_label = T
+  ),
+  tibble(measure = c( # Tutoring
+      'TSGRDG'
+    ), occasions = list(c(2, 4, 6)), na_vals = list(c(-9)), use_label = T
+  ),
   tibble(measure = 'X_RACETHP_R', na_vals = list(-9), use_label = T),
   tibble(measure = 'X_CHSEX_R', na_vals = list(-9), use_label = T),
   tibble(measure = 'X1FIRKDG', na_vals = list(-9), use_label = T),
+  tibble(measure = c('T4INTSTY', 'T4REGVWL', 'T4IRGVWL', 'T4RD1IND', 'T4RD1FLN'), na_vals = list(c(6, -9)), use_label = F),
+  tibble(measure = c('P4LUNCHS'), na_vals = list(c(-7, -8, -9)), use_label = T),
+  tibble(measure = c('X12LANGST'), na_vals = list(-9), use_label = T),
   tibble(measure = 'S_ID', na_vals = list(''), occasions = eclsk2011$ALL_OCCASIONS, use_label = F)
 ) %>% bind_rows()
 
