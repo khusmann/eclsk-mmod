@@ -45,7 +45,21 @@ stopifnot(all(near(df_val$XTCHAPP_F1, df_val$XTCHAPP, .01)))
 stopifnot(all(near(df_val$XATTNFS_F3, df_val$XATTNFS, .01)))
 stopifnot(all(near(df_val$XINBCNT_F4, df_val$XINBCNT, .01)))
 
-############### Define Models
+############### Make correlation tables
+
+df_val %>%
+  select(`Reading Theta`=XRTHETK5, `Math Theta`=XMTHETK5, `ATL`=MATL_F1, `AF`=MATTEN_F3, `IC`=MINHIB_F4, `BE`=MENG_F2) %>%
+  correlate(diagonal = 1) %>%
+  shave() %>%
+  mutate_if(is.numeric, ~ if_else(is.na(.x), "", sprintf("%0.2f", .x))) %>%
+  as_tibble() %>%
+  rename(` ` = rowname) %>%
+  kable('latex', caption='Correlations between academic outcomes and the MMOD chosen 4-factor structure parcels in the validation sample', label='corr_val',
+        booktabs=T, align=c('l', rep('c', 7)), escape=F) %>%
+  kable_styling() %>%
+  save_latex_table('corr_val_results')
+
+############## Define Models
 
 models_read <- list(
   theory = lmer(XRTHETK5 ~ grade + XATTNFS_F3 + XTCHAPP_F1 + XINBCNT_F4 + (1|CHILDID), df_val,
@@ -155,7 +169,7 @@ models %>%
   select(-var) %>%
   pivot_wider(names_from=id, values_from=val) %>%
   set_names(c(' ', rep(c('Estimate', 'SE'), 4))) %>%
-  kable('latex', caption='Results from multilevel models predicting reading and math achievement on the validation data set using the 4-factor structure chosen by best MMOD fit as compared to the theoretical factor structure', label='mlm_results',
+  kable('latex', caption='Results from multilevel models predicting reading and math achievement on the validation data set using the 4-factor structure chosen by best MMOD fit as compared to the theoretical factor structure. * indicates p < 0.05', label='mlm_results',
         booktabs=T, align=c('l', 'c'), escape=F) %>%
   kable_styling(latex_options = c('scale_down')) %>%
   add_header_above(c(' ' = 1,
