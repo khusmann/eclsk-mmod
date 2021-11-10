@@ -1,6 +1,7 @@
 source('scripts/eclsk2011_study1_tables/common.R')
 
 library(lmerTest)
+library(MuMIn)
 library(broom.mixed)
 library(corrr)
 
@@ -54,10 +55,23 @@ df_val %>%
   mutate_if(is.numeric, ~ if_else(is.na(.x), "", sprintf("%0.2f", .x))) %>%
   as_tibble() %>%
   rename(` ` = rowname) %>%
-  kable('latex', caption='Correlations between academic outcomes and the MMOD chosen 4-factor structure parcels in the validation sample', label='corr_val',
+  kable('latex', caption='Correlations between academic outcomes and the MMOD-selected 4-factor structure parcels in the validation sample', label='corr_val',
         booktabs=T, align=c('l', rep('c', 7)), escape=F) %>%
   kable_styling() %>%
   save_latex_table('corr_val_results')
+
+df_val %>%
+  select(`Reading Theta`=XRTHETK5, `Math Theta`=XMTHETK5, `ATL`=XTCHAPP_F1, `AF`=XATTNFS_F3, `IC`=XINBCNT_F4) %>%
+  correlate(diagonal = 1) %>%
+  shave() %>%
+  mutate_if(is.numeric, ~ if_else(is.na(.x), "", sprintf("%0.2f", .x))) %>%
+  as_tibble() %>%
+  rename(` ` = rowname) %>%
+  kable('latex', caption='Correlations between academic outcomes and the theoretical 3-factor structure parcels in the validation sample', label='corr_val_theory',
+        booktabs=T, align=c('l', rep('c', 6)), escape=F) %>%
+  kable_styling() %>%
+  save_latex_table('corr_val_results_theory')
+
 
 ############## Define Models
 
@@ -96,6 +110,7 @@ models <- tibble(
 table_col <- function(mod) {
   tidy_mod <- tidy(mod)
   glance_mod <- glance(mod)
+  r2 <- sprintf('% 06.3f', r.squaredGLMM(mod))
   
   format_est <- function(i) {
     tbl <- tidy_mod %>%
@@ -152,6 +167,11 @@ table_col <- function(mod) {
       se = map_chr(mappings, format_se)
     ),
     tibble(
+      term = c('$R_{\\mathrm{GLMM}(m)}^2$','$R_{\\mathrm{GLMM}(c)}^2$'),
+      est = r2,
+      se = ''
+    ),
+    tibble(
       term = names(mappings_glnc),
       est = map_chr(mappings_glnc, format_mod),
       se = ''
@@ -180,5 +200,5 @@ models %>%
   group_rows(index=c('Factor Fixed Effects' = 4,
                      'Other Fixed Effects' = 2,
                      'Random Effects' = 2,
-                     'Model Fit' = 4)) %>%
+                     'Model Fit' = 6)) %>%
   save_latex_table('mlm_results')
