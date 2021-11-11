@@ -18,7 +18,7 @@ df_val <- eclsk2011$study1 %>%
   mutate( # Compute parcel scores for MMOD-chosen factor structure
     MATL_F1 = rowMeans(cbind(TWORKS, TPERSIS, TSHOWS, TADAPTS, TKEEPS, TATTEN), na.rm=T),
     MENG_F2 = rowMeans(cbind(TBGCCLR, TBGCBLD, TBABSBK), na.rm=T),
-    MATTEN_F3 = rowMeans(cbind(8-TBEZDSL, 8-TBTRBST, 8-TBEZDAC, 8-TBNOFIN), na.rm=T),
+    MDIST_F5 = rowMeans(cbind(TBEZDSL, TBTRBST, TBEZDAC, TBNOFIN), na.rm=T),
     MINHIB_F4 = rowMeans(cbind(TBSTNO, TBWTTSK, TFOLLOW_sc, TBFLWIN), na.rm=T)
   ) %>%
   mutate( # Compute parcel scores for theoretical structure
@@ -34,7 +34,7 @@ df_val <- eclsk2011$study1 %>%
   ungroup() %>%
   mutate_at( # Standardize all scales (mean=0, sd=1)
     vars(
-      MATL_F1, MENG_F2, MATTEN_F3, MINHIB_F4,
+      MATL_F1, MENG_F2, MDIST_F5, MINHIB_F4,
       XTCHAPP_F1, XATTNFS_F3, XINBCNT_F4,
       XTCHAPP, XATTNFS, XINBCNT
     ), scale
@@ -49,14 +49,14 @@ stopifnot(all(near(df_val$XINBCNT_F4, df_val$XINBCNT, .01)))
 ############### Make correlation tables
 
 df_val %>%
-  select(`Reading Theta`=XRTHETK5, `Math Theta`=XMTHETK5, `ATL`=MATL_F1, `AF`=MATTEN_F3, `IC`=MINHIB_F4, `BE`=MENG_F2) %>%
+  select(`Reading Theta`=XRTHETK5, `Math Theta`=XMTHETK5, `ATL`=MATL_F1, `IC`=MINHIB_F4, `DI`=MDIST_F5, `SF`=MENG_F2) %>%
   correlate(diagonal = 1) %>%
   shave() %>%
   mutate_if(is.numeric, ~ if_else(is.na(.x), "", sprintf("%0.2f", .x))) %>%
   as_tibble() %>%
   rename(` ` = rowname) %>%
   kable('latex', caption='Correlations between academic outcomes and the MMOD-selected 4-factor structure parcels in the validation sample', label='corr_val',
-        booktabs=T, align=c('l', rep('c', 7)), escape=F) %>%
+        booktabs=T, align=c('l', rep('c', 6)), escape=F) %>%
   kable_styling() %>%
   save_latex_table('corr_val_results')
 
@@ -68,7 +68,7 @@ df_val %>%
   as_tibble() %>%
   rename(` ` = rowname) %>%
   kable('latex', caption='Correlations between academic outcomes and the theoretical 3-factor structure parcels in the validation sample', label='corr_val_theory',
-        booktabs=T, align=c('l', rep('c', 6)), escape=F) %>%
+        booktabs=T, align=c('l', rep('c', 5)), escape=F) %>%
   kable_styling() %>%
   save_latex_table('corr_val_results_theory')
 
@@ -79,7 +79,7 @@ models_read <- list(
   theory = lmer(XRTHETK5 ~ grade + XATTNFS_F3 + XTCHAPP_F1 + XINBCNT_F4 + (1|CHILDID), df_val,
                 REML=F, control=lmerControl(optimizer='bobyqa')),
   
-  f4 = lmer(XRTHETK5 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MATTEN_F3 + (1|CHILDID), df_val,
+  f4 = lmer(XRTHETK5 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MDIST_F5 + (1|CHILDID), df_val,
             REML=F, control=lmerControl(optimizer='bobyqa'))
 )
 
@@ -87,7 +87,7 @@ models_math <- list(
   theory = lmer(XMTHETK5 ~ grade + XATTNFS_F3 + XTCHAPP_F1 + XINBCNT_F4 + (1|CHILDID), df_val,
                 REML=F, control=lmerControl(optimizer='bobyqa')),
   
-  f4 = lmer(XMTHETK5 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MATTEN_F3 + (1|CHILDID), df_val,
+  f4 = lmer(XMTHETK5 ~ grade + MATL_F1 + MENG_F2 + MINHIB_F4 + MDIST_F5 + (1|CHILDID), df_val,
             REML=F, control=lmerControl(optimizer='bobyqa'))
   
 )
@@ -144,9 +144,10 @@ table_col <- function(mod) {
   
   mappings <- c(
     `Approaches to Learning` = '.*F1',
-    `Attentional Focusing` = '.*F3',
     `Inhibitory Control` = '.*F4',
-    `Behavioral Engagement` = '.*F2',
+    `Attentional Focusing` = '.*F3',
+    `Distractibility` = '.*F5',
+    `Sustained Focusing` = '.*F2',
     `(Intercept)` = '^\\(Intercept\\)',
     `Grade` = '^grade',      
     `sd(Intercept)` = 'sd__\\(Intercept\\)',
@@ -197,7 +198,7 @@ models %>%
                            'MMOD 4 Factor' = 2), 2))
   )  %>%
   add_header_above(c(' ' = 1, 'Reading Theta Score' = 4, 'Math Theta Score' = 4)) %>%
-  group_rows(index=c('Factor Fixed Effects' = 4,
+  group_rows(index=c('Factor Fixed Effects' = 5,
                      'Other Fixed Effects' = 2,
                      'Random Effects' = 2,
                      'Model Fit' = 6)) %>%
